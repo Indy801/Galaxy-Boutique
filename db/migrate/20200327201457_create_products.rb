@@ -5,7 +5,7 @@ class CreateProducts < ActiveRecord::Migration[6.0]
       t.string :name
       t.text :description
       t.float :price
-      t.int :quantity_in_stock
+      t.integer :quantity_in_stock
       t.float :discount_percent
       t.references :category, null: false, foreign_key: true
 
