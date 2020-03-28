@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
-  resources :provinces, only: %i[index show], defaults: { format: :json }
+  resources :provinces, :categories,
+            only: %i[index show], defaults: { format: :json }
 
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
