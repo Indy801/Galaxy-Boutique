@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   scope "/api" do
-    resources :provinces, :categories,
+    resources :provinces, :categories, :products,
               only: %i[index show], defaults: { format: :json }
   end
 
