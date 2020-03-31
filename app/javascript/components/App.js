@@ -26,7 +26,6 @@ class App extends React.Component {
       categories: [],
       productMenuOpen: false,
       productMenuAncher: null,
-      routerRedirect: null,
     };
   }
 
@@ -45,14 +44,10 @@ class App extends React.Component {
   onProductMenuClose = () => {
     this.setState({ productMenuAncher: null })
   }
-  onProductMenuClicked = (event) => {
-    this.setState({ routerRedirect: "/product" })
-    this.setState({ productMenuAncher: null })
-  }
 
   render () {
     const productMenuItems = this.state.categories.map((item) => {
-      return (<MenuItem key={item.id} onClick={this.onProductMenuClicked}>{ item.name }</MenuItem>)
+      return (<MenuItem key={item.id} component={Link} to={`/category/${item.id}`} onClick={this.onProductMenuClose}>{ item.name }</MenuItem>)
     })
 
 
@@ -70,7 +65,7 @@ class App extends React.Component {
                   Products
                 </Button>
                 <Menu id="products-category-menu" anchorEl={this.state.productMenuAncher} open={Boolean(this.state.productMenuAncher)} onClose={this.onProductMenuClose}>
-                  <MenuItem component={Link} key="0" onClick={this.onProductMenuClicked} to="/products">All Products</MenuItem>
+                  <MenuItem component={Link} key="0" onClick={this.onProductMenuClose} to="/products">All Products</MenuItem>
                   <Divider />
                   {productMenuItems}
                 </Menu>
@@ -79,7 +74,7 @@ class App extends React.Component {
           </AppBar>
 
           <Container>
-            <Box pt={4}>
+            <Box pt={4} pb={4}>
               <Route />
             </Box>
           </Container>
