@@ -9,7 +9,7 @@ Rails.application.routes.draw do
 
   # React routes
   root to: "client#index"
-  get "*", to: "client#index", as: "react"
+  get "*path", to: "client#index", as: "react"
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

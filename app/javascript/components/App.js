@@ -1,6 +1,6 @@
 import React from "react"
 import PropTypes from "prop-types"
-import { BrowserRouter as Router } from 'react-router-dom'
+import { BrowserRouter as Router, Redirect, Link } from 'react-router-dom'
 import Route from './Route'
 import axios from 'axios'
 
@@ -26,6 +26,7 @@ class App extends React.Component {
       categories: [],
       productMenuOpen: false,
       productMenuAncher: null,
+      routerRedirect: null,
     };
   }
 
@@ -44,10 +45,14 @@ class App extends React.Component {
   onProductMenuClose = () => {
     this.setState({ productMenuAncher: null })
   }
+  onProductMenuClicked = (event) => {
+    this.setState({ routerRedirect: "/product" })
+    this.setState({ productMenuAncher: null })
+  }
 
   render () {
     const productMenuItems = this.state.categories.map((item) => {
-      return (<MenuItem onClick={this.onProductMenuClose}>{ item.name }</MenuItem>)
+      return (<MenuItem key={item.id} onClick={this.onProductMenuClicked}>{ item.name }</MenuItem>)
     })
 
 
@@ -57,7 +62,7 @@ class App extends React.Component {
         <div>
           <AppBar position="static">
             <Toolbar>
-              <Box><Typography variant="h5">Galaxy Boutique</Typography></Box>
+              <Box><Link to="/" id="logo"><Typography variant="h5">Galaxy Boutique</Typography></Link></Box>
               <Box ml={2}>
                 <Button style={{color: grey[50]}} endIcon={<ExpandMore />}
                   aria-controls="products-category-menu" aria-haspopup="true" onClick={this.onProductNavButtonClick}
@@ -65,7 +70,7 @@ class App extends React.Component {
                   Products
                 </Button>
                 <Menu id="products-category-menu" anchorEl={this.state.productMenuAncher} open={Boolean(this.state.productMenuAncher)} onClose={this.onProductMenuClose}>
-                  <MenuItem onClick={this.onProductMenuClose}>All Products</MenuItem>
+                  <MenuItem component={Link} key="0" onClick={this.onProductMenuClicked} to="/products">All Products</MenuItem>
                   <Divider />
                   {productMenuItems}
                 </Menu>
