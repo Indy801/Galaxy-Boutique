@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   scope "/api" do
     resources :provinces, :categories, :products,
               only: %i[index show], defaults: { format: :json }
+    resources :pages, param: :url_link, only: %i[index show], defaults: { format: :json }
   end
 
   devise_for :admin_users, ActiveAdmin::Devise.config
