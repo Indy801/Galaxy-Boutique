@@ -1,7 +1,7 @@
 import React from "react"
 import PropTypes from "prop-types"
 
-import { Card, CardContent, Typography, Box } from "@material-ui/core"
+import { Card, CardContent, Typography, Box, Grid } from "@material-ui/core"
 import Axios from "axios"
 
 class Products extends React.Component {
@@ -25,11 +25,18 @@ class Products extends React.Component {
     const productsCards = this.state.products.map(product => {
       return (
         <Box item key={product.id} mt={3}>
-          <Card>
+          <Card className="product-card-img">
             <CardContent>
-              <Typography variant="h6">{product.name}</Typography>
-              <Typography variant="body1">${product.price}</Typography>
-              <Typography variant="body2">{product.description}</Typography>
+              <Grid container spacing={2}>
+                <Grid item md={3}>
+                  <img src={product.image} alt={product.name} />
+                </Grid>
+                <Grid item md={9}>
+                  <Typography variant="h6">{product.name}</Typography>
+                  <Typography variant="body1">${product.price}</Typography>
+                  <Typography variant="body2">{product.description}</Typography>
+                </Grid>
+              </Grid>
             </CardContent>
           </Card>
         </Box>
