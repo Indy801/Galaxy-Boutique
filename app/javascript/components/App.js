@@ -26,6 +26,8 @@ class App extends React.Component {
       categories: [],
       productMenuOpen: false,
       productMenuAncher: null,
+      companyPagesPath: null,
+      companyMenuAncher: null,
     };
   }
 
@@ -36,6 +38,13 @@ class App extends React.Component {
     }).then(response => {
       this.setState({categories: response.data})
     })
+
+    axios({
+      method: "get",
+      url: "/api/pages"
+    }).then(response => {
+      this.setState({ companyPagesPath: response.data })
+    })
   }
 
   onProductNavButtonClick = (event) => {
@@ -45,11 +54,25 @@ class App extends React.Component {
     this.setState({ productMenuAncher: null })
   }
 
+  onCompanyNavButtonClick = (event) => {
+    this.setState({ companyMenuAncher: event.currentTarget })
+  }
+  onCompanyMenuClose = () => {
+    this.setState({ companyMenuAncher: null })
+  }
+
   render () {
+    if (this.state.categories == null || this.state.companyPagesPath == null) {
+      return (<div></div>)
+    }
+
     const productMenuItems = this.state.categories.map((item) => {
       return (<MenuItem key={item.id} component={Link} to={`/category/${item.id}`} onClick={this.onProductMenuClose}>{ item.name }</MenuItem>)
     })
 
+    const companyMenuItems = this.state.companyPagesPath.map(item => {
+      return (<MenuItem key={item.id} component={Link} to={`/${item.url}`} onClick={this.onCompanyMenuClose}>{ item.title }</MenuItem>)
+    })
 
     return (
       <Router>
@@ -70,12 +93,22 @@ class App extends React.Component {
                   {productMenuItems}
                 </Menu>
               </Box>
+              <Box ml={2}>
+                <Button style={{color: grey[50]}} endIcon={<ExpandMore />}
+                  aria-controls="company-menu" aria-haspopup="true" onClick={this.onCompanyNavButtonClick}
+                >
+                  Company
+                </Button>
+                <Menu id="company-menu" anchorEl={this.state.companyMenuAncher} open={Boolean(this.state.companyMenuAncher)} onClose={this.onCompanyMenuClose}>
+                  {companyMenuItems}
+                </Menu>
+              </Box>
             </Toolbar>
           </AppBar>
 
           <Container>
             <Box pt={4} pb={4}>
-              <Route />
+              <Route companyPages={this.state.companyPagesPath} />
             </Box>
           </Container>
         </div>
