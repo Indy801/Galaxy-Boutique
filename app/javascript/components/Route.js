@@ -14,7 +14,7 @@ class Route extends React.Component {
 
   render () {
     const companyPagesRoute = this.props.companyPages.map(item => {
-      return <ReactRoute exact path={`/${item.url}`} component={CompanyPages} />
+      return <ReactRoute key={item.id} exact path={`/${item.url}`} component={CompanyPages} />
     })
 
     return (
