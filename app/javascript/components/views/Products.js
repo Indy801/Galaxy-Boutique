@@ -18,7 +18,7 @@ class Products extends React.Component {
       method: "get",
       url: "/api/products"
     }).then(response => {
-      this.setState({ products: response.data })
+      this.setState({ products: response.data.products })
     })
   }
 
