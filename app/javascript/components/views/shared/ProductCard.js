@@ -19,7 +19,7 @@ class ProductCard extends React.Component {
                 <img src={product.image} alt={product.name} />
               </Grid>
               <Grid item md={9}>
-                <Grid container direction="column" justify="space-between" className="right-column">
+                <Grid container spacing={3} direction="column" justify="space-between" className="right-column">
                   <Grid item>
                     <Typography variant="h6">{product.name}</Typography>
                     <Typography variant="body1">${product.price}</Typography>

@@ -3,15 +3,18 @@ import PropTypes from "prop-types"
 
 import Axios from 'axios'
 import { CircularProgress, Typography, Grid, Paper, Box, Divider } from '@material-ui/core'
-import { Button } from '@material-ui/core'
+import { Button, Link, TextField } from '@material-ui/core'
 import { ShoppingCartOutlined } from '@material-ui/icons'
-import { green } from '@material-ui/core/colors'
+import { green, blue } from '@material-ui/core/colors'
+import { Link as RouterLink } from 'react-router-dom'
+import moment from 'moment'
 
 class ProductDetail extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       product: null,
+      quantity: 1,
     }
   }
 
@@ -24,6 +27,12 @@ class ProductDetail extends React.Component {
     }).then(response => {
       this.setState({ product: response.data })
     })
+  }
+
+  quantityChanged = (event) => {
+    if (event.target.value !== "") {
+      this.setState({ quantity: event.target.value })
+    }
   }
 
   render () {
@@ -40,6 +49,7 @@ class ProductDetail extends React.Component {
       <div className="product-detail-page">
         <Box mb={5}>
           <Typography variant="h4">{ product.name }</Typography>
+          <Typography variant="body1">Category: <Link component={RouterLink} to={`/category/${product.category.id}`} style={{color: blue[500]}}>{ product.category.name }</Link></Typography>
         </Box>
         <Grid container justify="space-between" spacing={3}>
           <Grid item>
@@ -48,19 +58,27 @@ class ProductDetail extends React.Component {
           <Grid item>
             <Paper className="price-action-tab">
               <Box p={4} className="price-action-box">
-                <Grid container justify="space-between" direction="column" className="price-action-grid">
+
+                <Grid container spacing={4} justify="space-between" direction="column" className="price-action-grid">
                   <Grid item>
                     <Box mb={2}>
+                      <Typography variant="h6">Price:</Typography>
                       <Typography variant="h4">${ product.price }</Typography>
                     </Box>
                     <Divider />
                     <Box mt={2}>
-                      <Typography variant="body2" color="textSecondary">Listed on { product.created_at }</Typography>
-                      <Typography variant="body2" color="textSecondary">Last Updated on { product.updated_at }</Typography>
+                      <Typography variant="body2" color="textSecondary">Listed { moment(product.created_at).fromNow() }</Typography>
+                      <Typography variant="body2" color="textSecondary">Last Updated { moment(product.updated_at).fromNow() }</Typography>
                     </Box>
                   </Grid>
                   <Grid item>
-                    <Button variant="contained" style={{backgroundColor: green[500]}} startIcon={<ShoppingCartOutlined/>}>Add to Cart</Button>
+                    <Grid container spacing={1} direction="column">
+                      <Grid item><TextField label="Quantity" type="number" variant="outlined" style={{width: "100px"}}
+                                  value={this.state.quantity} onChange={this.quantityChanged}
+                                  inputProps={{ min: "1", step: "1" }}
+                                  /></Grid>
+                      <Grid item><Button variant="contained" style={{backgroundColor: green[500]}} startIcon={<ShoppingCartOutlined/>}>Add to Cart</Button></Grid>
+                    </Grid>
                   </Grid>
                 </Grid>
               </Box>
