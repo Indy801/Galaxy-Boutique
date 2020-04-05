@@ -3,6 +3,7 @@ import PropTypes from "prop-types"
 
 import Axios from "axios"
 import { Box, Typography, Card, Grid, CardContent, CircularProgress } from "@material-ui/core"
+import ProductCard from './shared/ProductCard'
 
 class Category extends React.Component {
   constructor(props) {
@@ -45,22 +46,7 @@ class Category extends React.Component {
       // Not loading
       const productCards = this.state.category.products.map(product => {
         return (
-          <Box key={product.id} mt={3}>
-            <Card className="product-card-img">
-              <CardContent>
-                <Grid container spacing={2}>
-                  <Grid item md={3}>
-                    <img src={product.image} alt={product.name} />
-                  </Grid>
-                  <Grid item md={9}>
-                    <Typography variant="h6">{product.name}</Typography>
-                    <Typography variant="body1">${product.price}</Typography>
-                    <Typography variant="body2">{product.description}</Typography>
-                  </Grid>
-                </Grid>
-              </CardContent>
-            </Card>
-          </Box>
+          <ProductCard key={product.id} product={product} />
         )
       })
 
