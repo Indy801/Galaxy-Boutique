@@ -33,3 +33,9 @@
     // }
   }
 }
+
+.product-filter-buttons {
+  & > * {
+    margin: 5px !important;
+  }
+}
