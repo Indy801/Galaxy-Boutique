@@ -4,9 +4,11 @@ import { BrowserRouter as Router, Redirect, Link } from 'react-router-dom'
 import Route from './Route'
 import axios from 'axios'
 
-import { Container, AppBar, Typography, Toolbar, createMuiTheme, ThemeProvider, Box, makeStyles } from '@material-ui/core'
+import { Container, AppBar, Typography, Toolbar, createMuiTheme, ThemeProvider, Box, makeStyles, InputLabel } from '@material-ui/core'
 import { Button, Menu, MenuItem, Divider, Hidden, IconButton, SwipeableDrawer } from '@material-ui/core'
 import { List, ListItem, ListItemText, Collapse, TextField, InputBase } from '@material-ui/core'
+import { FormControl, withStyles } from '@material-ui/core'
+
 import { fade } from '@material-ui/core'
 import 'typeface-roboto'
 import { grey, indigo } from "@material-ui/core/colors"
@@ -18,6 +20,46 @@ const theme = createMuiTheme({
       main: grey[800]
     },
     secondary: indigo
+  },
+})
+
+const styles = theme => ({
+  search: {
+    position: 'relative',
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: fade(theme.palette.common.white, 0.15),
+    '&:hover': {
+      backgroundColor: fade(theme.palette.common.white, 0.25),
+    },
+    marginRight: theme.spacing(2),
+    marginLeft: 0,
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing(3),
+      width: 'auto',
+    },
+  },
+  searchIcon: {
+    padding: theme.spacing(0, 2),
+    height: '100%',
+    position: 'absolute',
+    pointerEvents: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  inputRoot: {
+    color: 'inherit',
+  },
+  inputInput: {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+    transition: theme.transitions.create('width'),
+    width: '100%',
+    [theme.breakpoints.up('md')]: {
+      width: '20ch',
+    },
   },
 })
 
@@ -103,6 +145,8 @@ class App extends React.Component {
       </ListItem>)
     })
 
+    const classes = this.props.classes
+
     return (
       <Router>
         <ThemeProvider theme={theme}>
@@ -134,7 +178,19 @@ class App extends React.Component {
                   </Menu>
                 </Box>
                 <Box ml={4}>
-                  <TextField label="Search" />
+                  <div className={classes.search}>
+                    <div className={classes.searchIcon}>
+                      <SearchIcon />
+                    </div>
+                    <InputBase
+                      placeholder="Search…"
+                      classes={{
+                        root: classes.inputRoot,
+                        input: classes.inputInput,
+                      }}
+                      inputProps={{ 'aria-label': 'search' }}
+                    />
+                  </div>
                 </Box>
               </Hidden>
               <Hidden smUp>
@@ -201,4 +257,4 @@ class App extends React.Component {
   }
 }
 
-export default App
+export default withStyles(styles)(App)
