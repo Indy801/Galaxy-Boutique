@@ -1,15 +1,15 @@
 class SearchController < ApplicationController
   def search
     puts generate_query_name
-    @search_result_name = Product.where(generate_query_name)
-    @search_result_desc = Product.where(generate_query_desc)
+    @search_result_name = generate_category.where(generate_query_name)
+    @search_result_desc = generate_category.where(generate_query_desc)
     @search_result = @search_result_name | @search_result_desc
   end
 
   private
 
   def generate_query_name
-    return "name LIKE '%'" if params[:q] == ""
+    return "name LIKE '%'" if params[:q] == "" || params[:q].nil?
 
     search_keywords = params[:q].split(" ")
 
@@ -25,7 +25,7 @@ class SearchController < ApplicationController
   end
 
   def generate_query_desc
-    return "description LIKE '%'" if params[:q] == ""
+    return "description LIKE '%'" if params[:q] == "" || params[:q].nil?
 
     search_keywords = params[:q].split(" ")
 
@@ -37,5 +37,14 @@ class SearchController < ApplicationController
     end
 
     [sql_querys.join(" AND ")] + sql_params
+  end
+
+  def generate_category
+    category_id = params[:c].to_i if !params[:c].nil? && params[:c].match?(/^\d+$/)
+    if category_id.nil? || category_id < 1
+      Product.all
+    else
+      Category.find(category_id).products
+    end
   end
 end

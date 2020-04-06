@@ -14,38 +14,65 @@ class SearchPage extends React.Component {
       categoryValue: 0,
       searchKeyword: "",
     }
+    this.searchBar = React.createRef()
+    this.searchTimeOut = 0
+    this.onSearchKeywordChange = this.onSearchKeywordChange.bind(this)
   }
 
   componentDidMount() {
-    this.fetchProducts("")
+    this.fetchProducts("", 0)
+
+    Axios({
+      url: "/api/categories",
+      method: "get"
+    }).then(response => {
+      this.setState({categories: response.data})
+    })
   }
 
   onCategoryChange = (event) => {
-    this.setState({ categoryValue: event.target.value })
+    // this.setState({ categoryValue: event.target.value })
+    this.fetchProducts(this.state.searchKeyword, event.target.value)
   }
 
   onSearchKeywordChange = (event) => {
-    this.setState({ products: null })
-    this.fetchProducts(event.target.value)
+    const searchText = event.target.value
+    this.setState({ products: null, searchKeyword: searchText })
+    if (this.searchTimeOut) clearTimeout(this.searchTimeOut)
+    this.searchTimeOut = setTimeout(() => {
+      this.fetchProducts(searchText, this.state.categoryValue)
+    }, 500)
   }
 
-  fetchProducts = (q) => {
+  fetchProducts = (q, cat) => {
+    this.setState({
+      searchKeyword: q,
+      categoryValue: cat,
+    })
+
     Axios({
       method: "get",
       url: "/api/search",
       params: {
-        q: q
+        q: q,
+        c: cat,
       }
     }).then(response => {
       this.setState({
         products: response.data.results,
-        searchKeyword: q,
       })
     })
   }
 
   render () {
     let productsCards = (<Box><CircularProgress /></Box>)
+    let categoryItems = null
+
+    if (this.state.categories != null) {
+      categoryItems = this.state.categories.map(item =>
+        <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>
+      )
+    }
 
     if (this.state.products != null) {
       productsCards = this.state.products.map(item =>
@@ -71,14 +98,12 @@ class SearchPage extends React.Component {
                   <MenuItem value={0}>
                     All
                   </MenuItem>
-                  <MenuItem value={1}>Ten</MenuItem>
-                  <MenuItem value={2}>Twenty</MenuItem>
-                  <MenuItem value={3}>Thirty</MenuItem>
+                  { categoryItems }
                 </Select>
               </FormControl>
             </Grid>
             <Grid item xs={9}>
-              <TextField fullWidth label="Search" onChange={this.onSearchKeywordChange} />
+              <TextField fullWidth label="Search" ref={this.searchBar} value={this.state.searchKeyword} onChange={this.onSearchKeywordChange} />
             </Grid>
           </Grid>
         </Box>
