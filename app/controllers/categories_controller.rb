@@ -6,12 +6,13 @@ class CategoriesController < ApplicationController
   def show
     @category = Category.includes(:products).find(params[:id])
 
-    @total_product_pages = @category.products.page(1).total_pages
+    @filtered_products = @category.products.where(extract_filter_param)
+    @total_product_pages = @filtered_products.page(1).total_pages
     @product_page_num = extract_page_param(params[:page])
     @products = if @product_page_num
-                  @category.products.page(@product_page_num)
+                  @filtered_products.page(@product_page_num)
                 else
-                  @category.products.all
+                  @filtered_products.all
                 end
     @product_page_num ||= 0
   end
@@ -24,5 +25,15 @@ class CategoriesController < ApplicationController
     else
       false
     end
+  end
+
+  def extract_filter_param
+    sql_fragment = []
+    sql_fragment.push("date(created_at) >= date('now','-3 day')") if params.key?(:new)
+    if params.key?(:ru)
+      sql_fragment.push("(date(created_at) <> date(updated_at) AND date(updated_at) >= date('now','-3 day'))")
+    end
+    sql_fragment.push("discount_percent > 0") if params.key?(:os)
+    sql_fragment.join(" OR ")
   end
 end
