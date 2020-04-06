@@ -4,12 +4,13 @@ import { BrowserRouter as Router, Redirect, Link } from 'react-router-dom'
 import Route from './Route'
 import axios from 'axios'
 
-import { Container, AppBar, Typography, Toolbar, createMuiTheme, ThemeProvider, Box } from '@material-ui/core'
+import { Container, AppBar, Typography, Toolbar, createMuiTheme, ThemeProvider, Box, makeStyles } from '@material-ui/core'
 import { Button, Menu, MenuItem, Divider, Hidden, IconButton, SwipeableDrawer } from '@material-ui/core'
-import { List, ListItem, ListItemText, Collapse } from '@material-ui/core'
+import { List, ListItem, ListItemText, Collapse, TextField, InputBase } from '@material-ui/core'
+import { fade } from '@material-ui/core'
 import 'typeface-roboto'
 import { grey, indigo } from "@material-ui/core/colors"
-import { ExpandMore, Menu as MenuIcon } from "@material-ui/icons"
+import { ExpandMore, Menu as MenuIcon, Search as SearchIcon } from "@material-ui/icons"
 
 const theme = createMuiTheme({
   palette: {
@@ -131,6 +132,9 @@ class App extends React.Component {
                   <Menu id="company-menu" anchorEl={this.state.companyMenuAncher} open={Boolean(this.state.companyMenuAncher)} onClose={this.onCompanyMenuClose}>
                     {companyMenuItems}
                   </Menu>
+                </Box>
+                <Box ml={4}>
+                  <TextField label="Search" />
                 </Box>
               </Hidden>
               <Hidden smUp>

@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     resources :provinces, :categories, :products,
               only: %i[index show], defaults: { format: :json }
     resources :pages, param: :url_link, only: %i[index show], defaults: { format: :json }
+    get "search", to: "search#search", as: "search", defaults: { format: :json }
   end
 
   devise_for :admin_users, ActiveAdmin::Devise.config
