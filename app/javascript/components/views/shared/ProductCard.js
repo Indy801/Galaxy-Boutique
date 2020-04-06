@@ -20,10 +20,10 @@ class ProductCard extends React.Component {
       }
     })
 
-    const priceText = (product.discount_percent <= 0) ? (<Typography variant="body1">${product.price}</Typography>) : (
+    const priceText = (product.discount_percent <= 0) ? (<Typography variant="h5">${product.price}</Typography>) : (
       <ThemeProvider theme={saleStyle}>
-        <Typography variant="body1" className="original-price-cross">${product.price}</Typography>
-        <Typography variant="h5">${salePrice}</Typography>
+        <Typography variant="h5" className="original-price-cross">${product.price}</Typography>
+        <Typography variant="h4">${salePrice}</Typography>
         <Chip label={`${(product.discount_percent * 100).toFixed(0)}% off`} color="primary" />
       </ThemeProvider>
     )

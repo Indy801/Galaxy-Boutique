@@ -2,10 +2,11 @@ import React from "react"
 import PropTypes from "prop-types"
 
 import Axios from 'axios'
-import { CircularProgress, Typography, Grid, Paper, Box, Divider } from '@material-ui/core'
+import { CircularProgress, Typography, Grid, Paper, Box, Divider, Chip } from '@material-ui/core'
 import { Button, Link, TextField } from '@material-ui/core'
 import { ShoppingCartOutlined } from '@material-ui/icons'
-import { green, blue } from '@material-ui/core/colors'
+import { green, blue, pink } from '@material-ui/core/colors'
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { Link as RouterLink } from 'react-router-dom'
 import moment from 'moment'
 
@@ -45,6 +46,23 @@ class ProductDetail extends React.Component {
     }
 
     const product = this.state.product
+    const saleStyle = createMuiTheme({
+      palette: {
+        primary: {
+          main: pink[500]
+        }
+      }
+    })
+
+    const salePrice = (product.price * (1 - product.discount_percent)).toFixed(2)
+    const priceText = (product.discount_percent <= 0) ? (<Typography variant="h4">${product.price}</Typography>) : (
+      <ThemeProvider theme={saleStyle}>
+        <Typography variant="h5" className="original-price-cross">${product.price}</Typography>
+        <Typography variant="h4">${salePrice}</Typography>
+        <Chip label={`${(product.discount_percent * 100).toFixed(0)}% off`} color="primary" />
+      </ThemeProvider>
+    )
+
     return (
       <div className="product-detail-page">
         <Box mb={5}>
@@ -63,12 +81,12 @@ class ProductDetail extends React.Component {
                   <Grid item>
                     <Box mb={2}>
                       <Typography variant="h6">Price:</Typography>
-                      <Typography variant="h4">${ product.price }</Typography>
+                      { priceText }
                     </Box>
                     <Divider />
                     <Box mt={2}>
                       <Typography variant="body2" color="textSecondary">Listed { moment(product.created_at).fromNow() }</Typography>
-                      <Typography variant="body2" color="textSecondary">Last Updated { moment(product.updated_at).fromNow() }</Typography>
+                      <Typography variant="body2" color="textSecondary">Last updated { moment(product.updated_at).fromNow() }</Typography>
                     </Box>
                   </Grid>
                   <Grid item>
