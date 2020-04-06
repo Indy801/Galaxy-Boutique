@@ -13,6 +13,10 @@
     img {
       width: 200px;
     }
+
+    .original-price-cross {
+      text-decoration: line-through;
+    }
 }
 
 .product-detail-page {
@@ -37,5 +41,6 @@
 .product-filter-buttons {
   & > * {
     margin: 5px !important;
+    transition: background-color 0.3s;
   }
 }

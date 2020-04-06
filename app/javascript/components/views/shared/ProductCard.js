@@ -1,14 +1,34 @@
 import React from "react"
 import PropTypes from "prop-types"
 
-import { Box, Card, CardContent, Grid, Typography, Button } from '@material-ui/core'
-import { green, blue } from '@material-ui/core/colors'
+import { Box, Card, CardContent, Grid, Typography, Button, Chip } from '@material-ui/core'
+import { green, blue, lightBlue, red, pink } from '@material-ui/core/colors'
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { ShoppingCartOutlined, List as ListIcon } from '@material-ui/icons'
 import { Link } from 'react-router-dom'
 
 class ProductCard extends React.Component {
   render () {
     const product = this.props.product
+    const salePrice = (product.price * (1 - product.discount_percent)).toFixed(2)
+
+    const saleStyle = createMuiTheme({
+      palette: {
+        primary: {
+          main: pink[500]
+        }
+      }
+    })
+
+    const priceText = (product.discount_percent <= 0) ? (<Typography variant="body1">${product.price}</Typography>) : (
+      <ThemeProvider theme={saleStyle}>
+        <Typography variant="body1" className="original-price-cross">${product.price}</Typography>
+        <Typography variant="h5">${salePrice}</Typography>
+        <Chip label={`${(product.discount_percent * 100).toFixed(0)}% off`} color="primary" />
+      </ThemeProvider>
+    )
+
+
 
     return (
       <Box mt={3}>
@@ -22,12 +42,12 @@ class ProductCard extends React.Component {
                 <Grid container spacing={3} direction="column" justify="space-between" className="right-column">
                   <Grid item>
                     <Typography variant="h6">{product.name}</Typography>
-                    <Typography variant="body1">${product.price}</Typography>
+                    { priceText }
                   </Grid>
                   <Grid item>
                     <Grid container spacing={2}>
-                      <Grid item><Button component={Link} to={`/product/${product.id}`} variant="contained" style={{backgroundColor: blue[500]}} startIcon={<ListIcon/>}>See Details</Button></Grid>
-                      <Grid item><Button variant="contained" style={{backgroundColor: green[500]}} startIcon={<ShoppingCartOutlined/>}>Add to Cart</Button></Grid>
+                      <Grid item><Button component={Link} to={`/product/${product.id}`} variant="contained" style={{backgroundColor: lightBlue[300]}} startIcon={<ListIcon/>}>See Details</Button></Grid>
+                      <Grid item><Button variant="contained" style={{backgroundColor: green[400]}} startIcon={<ShoppingCartOutlined/>}>Add to Cart</Button></Grid>
                     </Grid>
                   </Grid>
                 </Grid>

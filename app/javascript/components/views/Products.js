@@ -73,13 +73,13 @@ class Products extends React.Component {
     }
 
     const newFilterCheck = this.state.filters["new"] ? <CheckIcon /> : <AddCircleOutline />
-    const newFilterStyle = {transition: "background-color 0.3s", backgroundColor: (this.state.filters["new"] ? green[500] : null)}
+    const newFilterStyle = {backgroundColor: (this.state.filters["new"] ? green[500] : null)}
 
     const ruFilterCheck = this.state.filters["ru"] ? <CheckIcon /> : <AddCircleOutline />
-    const ruFilterStyle = {transition: "background-color 0.3s", backgroundColor: (this.state.filters["ru"] ? green[500] : null)}
+    const ruFilterStyle = {backgroundColor: (this.state.filters["ru"] ? green[500] : null)}
 
     const osFilterCheck = this.state.filters["os"] ? <CheckIcon /> : <AddCircleOutline />
-    const osFilterStyle = {transition: "background-color 0.3s", backgroundColor: (this.state.filters["os"] ? green[500] : null)}
+    const osFilterStyle = {backgroundColor: (this.state.filters["os"] ? green[500] : null)}
 
     return (
       <div>
