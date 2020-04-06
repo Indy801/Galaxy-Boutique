@@ -7,7 +7,8 @@ import Products from './views/Products'
 import Category from './views/Category'
 import CompanyPages from './views/CompanyPages'
 import ProductDetail from './views/ProductDetail'
-import SearchPage from "./views/SearchPage";
+import SearchPage from "./views/SearchPage"
+import ShoppingCart from "./views/ShoppingCart";
 
 class Route extends React.Component {
   constructor(props) {
@@ -26,6 +27,7 @@ class Route extends React.Component {
         <ReactRoute exact path="/category/:id" component={Category} />
         <ReactRoute exact path="/product/:id" component={ProductDetail} />
         <ReactRoute exact path="/search" component={SearchPage} />
+        <ReactRoute exact path="/cart" component={ShoppingCart} />
         { companyPagesRoute }
       </Switch>
     );

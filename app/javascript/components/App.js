@@ -12,7 +12,7 @@ import { FormControl, withStyles } from '@material-ui/core'
 import { fade } from '@material-ui/core'
 import 'typeface-roboto'
 import { grey, indigo } from "@material-ui/core/colors"
-import { ExpandMore, Menu as MenuIcon, Search as SearchIcon } from "@material-ui/icons"
+import { ExpandMore, Menu as MenuIcon, Search as SearchIcon, ShoppingCart } from "@material-ui/icons"
 
 const theme = createMuiTheme({
   palette: {
@@ -24,6 +24,9 @@ const theme = createMuiTheme({
 })
 
 const styles = theme => ({
+  grow: {
+    flexGrow: 1,
+  },
   search: {
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
@@ -192,7 +195,14 @@ class App extends React.Component {
                     />
                   </div>
                 </Box>
+                <div className={classes.grow} />
+                <Box>
+                  <IconButton component={Link} to="/cart" color="inherit">
+                    <ShoppingCart />
+                  </IconButton>
+                </Box>
               </Hidden>
+
               <Hidden smUp>
                 <Box>
                   <IconButton edge="start" color="inherit" onClick={this.toggleSideBar(true)}>

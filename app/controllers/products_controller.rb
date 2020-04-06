@@ -15,6 +15,10 @@ class ProductsController < ApplicationController
     @product = Product.find(params[:id])
   end
 
+  def shopping_cart
+    puts params[:id]
+  end
+
   private
 
   def extract_page_param(page_num)

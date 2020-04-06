@@ -36,6 +36,18 @@ class ProductDetail extends React.Component {
     }
   }
 
+  addToCart = (id, name) => (event) => {
+    let cart = localStorage.getItem('cart') == null ? [] : JSON.parse(localStorage.getItem('cart'))
+    const item = cart.find(i => i.id == id)
+    if (item == undefined) {
+      cart.push({id: id, name: name, quantity: parseInt(this.state.quantity)})
+    } else {
+      item.quantity += parseInt(this.state.quantity)
+    }
+    console.log(JSON.stringify(cart))
+    localStorage.setItem('cart', JSON.stringify(cart))
+  }
+
   render () {
     if (this.state.product == null) {
       return (
@@ -95,7 +107,9 @@ class ProductDetail extends React.Component {
                                   value={this.state.quantity} onChange={this.quantityChanged}
                                   inputProps={{ min: "1", step: "1" }}
                                   /></Grid>
-                      <Grid item><Button variant="contained" style={{backgroundColor: green[500]}} startIcon={<ShoppingCartOutlined/>}>Add to Cart</Button></Grid>
+                      <Grid item><Button variant="contained" style={{backgroundColor: green[500]}} startIcon={<ShoppingCartOutlined/>}
+                                    onClick={this.addToCart(product.id, product.name)}
+                                  >Add to Cart</Button></Grid>
                     </Grid>
                   </Grid>
                 </Grid>
