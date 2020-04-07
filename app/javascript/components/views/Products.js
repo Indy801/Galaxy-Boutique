@@ -24,7 +24,14 @@ class Products extends React.Component {
   }
 
   componentDidMount() {
-    this.fetchProductData(1)
+    const queryString = this.props.location.search
+    const urlParams = new URLSearchParams(queryString);
+    let page = urlParams.get("page")
+    page = page || 1
+    Object.keys(this.state.filters).map((name) => {
+      this.state.filters[name] = urlParams.has(name)
+    })
+    this.fetchProductData(page)
   }
 
   fetchProductData = (page) => {
@@ -45,10 +52,24 @@ class Products extends React.Component {
     })
   }
 
+  changeUrl = (page, filters) => {
+    const urlParams = new URLSearchParams()
+    urlParams.append("page", page)
+    Object.keys(filters).map(name => {
+      if (filters[name]) urlParams.append(name, 1)
+    })
+    console.log(urlParams.toString())
+    this.props.history.replace({
+      pathname: "/products",
+      search: urlParams.toString()
+    })
+  }
+
   pageChanged = (event, page) => {
     this.setState({ page: page, products: null })
     this.fetchProductData(page)
     window.scrollTo(0, 0)
+    this.changeUrl(page, this.state.filters)
   }
 
   filterChanged = (filterName) => (event) => {
@@ -56,6 +77,7 @@ class Products extends React.Component {
     filters[filterName] = !filters[filterName]
     this.setState({ filters: filters, page: 1, products: null })
     this.fetchProductData(1)
+    this.changeUrl(1, filters)
   }
 
   render () {
