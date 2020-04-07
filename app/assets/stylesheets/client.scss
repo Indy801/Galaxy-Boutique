@@ -57,3 +57,14 @@
     width: 100%;
   }
 }
+
+.shopping-cart-card {
+  img {
+    width: 100px;
+    height: 150px;
+  }
+
+  .original-price-cross {
+    text-decoration: line-through;
+  }
+}

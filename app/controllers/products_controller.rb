@@ -16,7 +16,7 @@ class ProductsController < ApplicationController
   end
 
   def shopping_cart
-    puts params[:id]
+    @products = Product.find(params[:id])
   end
 
   private

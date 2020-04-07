@@ -3,10 +3,11 @@ import PropTypes from "prop-types"
 
 import Axios from 'axios'
 import { CircularProgress, Typography, Grid, Paper, Box, Divider, Chip } from '@material-ui/core'
-import { Button, Link, TextField } from '@material-ui/core'
+import { Button, Link, TextField, Snackbar } from '@material-ui/core'
 import { ShoppingCartOutlined } from '@material-ui/icons'
 import { green, blue, pink } from '@material-ui/core/colors'
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import { Alert } from '@material-ui/lab'
 import { Link as RouterLink } from 'react-router-dom'
 import moment from 'moment'
 
@@ -16,6 +17,7 @@ class ProductDetail extends React.Component {
     this.state = {
       product: null,
       quantity: 1,
+      addCartSuccessAlert: false,
     }
   }
 
@@ -46,6 +48,11 @@ class ProductDetail extends React.Component {
     }
     console.log(JSON.stringify(cart))
     localStorage.setItem('cart', JSON.stringify(cart))
+    this.setState({ addCartSuccessAlert: true })
+  }
+
+  onCartSuccessAlertClose = (event) => {
+    this.setState({ addCartSuccessAlert: false })
   }
 
   render () {
@@ -110,6 +117,13 @@ class ProductDetail extends React.Component {
                       <Grid item><Button variant="contained" style={{backgroundColor: green[500]}} startIcon={<ShoppingCartOutlined/>}
                                     onClick={this.addToCart(product.id, product.name)}
                                   >Add to Cart</Button></Grid>
+
+                        <Snackbar open={this.state.addCartSuccessAlert} autoHideDuration={7000} onClose={this.onCartSuccessAlertClose}>
+                          <Alert elevation={6} variant="filled" onClose={this.onCartSuccessAlertClose} severity="success">
+                            Added {this.state.quantity} {product.name} to the cart.
+                          </Alert>
+                        </Snackbar>
+
                     </Grid>
                   </Grid>
                 </Grid>
