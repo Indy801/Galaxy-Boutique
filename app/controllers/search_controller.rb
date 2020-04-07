@@ -2,8 +2,9 @@ class SearchController < ApplicationController
   def search
     puts generate_query_name
     @search_result_name = generate_category.where(generate_query_name)
-    @search_result_desc = generate_category.where(generate_query_desc)
-    @search_result = @search_result_name | @search_result_desc
+    # @search_result_desc = generate_category.where(generate_query_desc)
+    # @search_result = @search_result_name | @search_result_desc
+    @search_result = @search_result_name
   end
 
   private
