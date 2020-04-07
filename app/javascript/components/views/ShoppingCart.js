@@ -2,7 +2,10 @@ import React from "react"
 import PropTypes from "prop-types"
 
 import Axios from 'axios'
-import { Box, Typography, CircularProgress, Card, CardContent, Grid } from "@material-ui/core";
+import { Box, Typography, CircularProgress, Card, CardContent, Grid, TextField } from "@material-ui/core";
+import { IconButton, Snackbar, Button } from "@material-ui/core";
+import { Alert } from "@material-ui/lab";
+import { Delete as DeleteIcon } from "@material-ui/icons";
 
 class ShoppingCart extends React.Component {
   constructor(props) {
@@ -10,25 +13,63 @@ class ShoppingCart extends React.Component {
     this.state = {
       cart: null,
       products: null,
+      deleteItemAlert: false,
+      deletedItemName: "",
+      undoCartList: null,
     }
   }
 
   componentDidMount() {
     const cart = localStorage.getItem('cart') == null ? [] : JSON.parse(localStorage.getItem('cart'))
-    this.setState({ cart: cart })
+    this.fetchProducts(cart)
+  }
 
-    Axios({
-      method: "get",
-      url: "/api/shopping_cart",
-      params: {
-        id: cart.map(item => item.id)
-      }
-    }).then(response => {
-      this.setState({ products: response.data.products })
-    })
+  onItemDeleteClick = (item) => (event) => {
+    const ix = this.state.cart.indexOf(item)
+    const orgCart = this.state.cart.slice()
+    console.log(ix)
+    this.state.cart.splice(ix, 1)
+    this.saveItemsToStorage(this.state.cart)
+    this.fetchProducts(this.state.cart)
+    this.setState({ deleteItemAlert: true, deletedItemName: item.name, undoCartList: orgCart })
+  }
+
+  onCartDeleteAlertClose = (event, reason) => {
+    if (reason == "timeout") {
+      this.setState({ deleteItemAlert: false })
+    }
+  }
+
+  saveItemsToStorage = (cart) => {
+    localStorage.setItem('cart', JSON.stringify(cart))
+  }
+
+  undoDelete = (event) => {
+    const orgCart = this.state.undoCartList
+    this.saveItemsToStorage(orgCart)
+    this.fetchProducts(orgCart)
+    this.setState({ undoCartList: null, deleteItemAlert: false })
+  }
+
+  fetchProducts = (cart) => {
+    if (cart.length > 0) {
+      Axios({
+        method: "get",
+        url: "/api/shopping_cart",
+        params: {
+          id: cart.map(item => item.id)
+        }
+      }).then(response => {
+        this.setState({ products: response.data.products })
+        this.setState({ cart: cart })
+      })
+    } else {
+      this.setState({ products: [] })
+    }
   }
 
   render () {
+    let subtotal = 0;
     let shoppingCart = <CircularProgress />
 
     if (this.state.cart != null && this.state.products != null && this.state.cart.length < 1) {
@@ -39,6 +80,7 @@ class ShoppingCart extends React.Component {
         const salesPrice = (product.price * (1 - product.discount_percent)).toFixed(2)
         const onSale = product.discount_percent > 0
         const totalPrice = (salesPrice * item.quantity).toFixed(2)
+        subtotal += totalPrice
         return (
         <Box mt={3} key={item.id}>
           <Card className="shopping-cart-card">
@@ -60,6 +102,19 @@ class ShoppingCart extends React.Component {
                     </Grid>
                     )
                   : <Typography variant="h6">${ salesPrice }</Typography>)}
+                  <Box mt={2}>
+                    <Grid container spacing={2}>
+                      <Grid item>
+                        <TextField label="Quantity" type="number" variant="outlined" size="small" style={{width: "70px"}}
+                                  value={item.quantity}
+                                  inputProps={{ min: "1", step: "1" }}
+                                  />
+                      </Grid>
+                      <Grid item>
+                        <IconButton onClick={this.onItemDeleteClick(item)}><DeleteIcon /></IconButton>
+                      </Grid>
+                    </Grid>
+                  </Box>
                 </Grid>
               </Grid>
             </CardContent>
@@ -77,6 +132,11 @@ class ShoppingCart extends React.Component {
         <Box>
           {shoppingCart}
         </Box>
+        <Snackbar open={this.state.deleteItemAlert} autoHideDuration={10000} onClose={this.onCartDeleteAlertClose}>
+          <Alert elevation={6} variant="filled" severity="error" action={<Button color="primary" size="small" onClick={this.undoDelete}>Undo</Button>}>
+            Deleted { this.state.deletedItemName } from cart.
+          </Alert>
+        </Snackbar>
       </div>
     );
   }
