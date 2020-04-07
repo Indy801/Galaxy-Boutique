@@ -25,19 +25,28 @@ class Category extends React.Component {
 
   componentDidMount() {
     const { match: { params } } = this.props
-    this.fetchCategory(params)
+    const urlParams = new URLSearchParams(this.props.location.search)
+    const page = urlParams.get("page") || 1
+    Object.keys(this.state.filters).map((name) => {
+      this.state.filters[name] = urlParams.has(name)
+    })
+    this.fetchCategory(params.id, page)
   }
   componentDidUpdate(prevProps) {
     let oldId = prevProps.match.params.id
     let newId = this.props.match.params.id
     if (newId !== oldId)
-      this.fetchCategory(this.props.match.params)
+      this.fetchCategory(this.props.match.params.id, 1)
   }
 
-  fetchCategory = (params) => {
+  fetchCategory = (id, page) => {
+    const filterUrl = []
+    Object.keys(this.state.filters).map((name, index) => {
+       if (this.state.filters[name]) filterUrl.push(name)
+    })
     Axios({
       method: "get",
-      url: `/api/categories/${params.id}?page=1`
+      url: `/api/categories/${id}?page=${page}&${filterUrl.join("&")}`
     }).then(response => {
       this.setState({
         category: response.data,
@@ -64,11 +73,25 @@ class Category extends React.Component {
     })
   }
 
+  changeUrl = (page, filters) => {
+    const urlParams = new URLSearchParams()
+    urlParams.append("page", page)
+    Object.keys(filters).map(name => {
+      if (filters[name]) urlParams.append(name, 1)
+    })
+    console.log(urlParams.toString())
+    this.props.history.replace({
+      pathname: this.props.location.pathname,
+      search: urlParams.toString()
+    })
+  }
+
   pageChanged = (event, page) => {
     const currentCat = this.state.category
     currentCat.products = null
     this.setState({ category: currentCat })
     this.fetchProducts(page)
+    this.changeUrl(page, this.state.filters)
   }
 
   filterChanged = (filterName) => (event) => {
@@ -78,6 +101,7 @@ class Category extends React.Component {
     filters[filterName] = !filters[filterName]
     this.setState({ filters: filters, page: 1, category: currentCat })
     this.fetchProducts(1)
+    this.changeUrl(this.state.page, filters)
   }
 
   render () {
