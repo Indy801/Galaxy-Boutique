@@ -20,19 +20,30 @@ class SearchPage extends React.Component {
   }
 
   componentDidMount() {
-    this.fetchProducts("", 0)
+    const urlParams = new URLSearchParams(this.props.location.search)
+    const urlQ = urlParams.get("q") || ""
+    const urlC = urlParams.get("c") || 0
+    this.searchBar.focus()
 
     Axios({
       url: "/api/categories",
       method: "get"
     }).then(response => {
       this.setState({categories: response.data})
+      this.fetchProducts(urlQ, urlC)
     })
   }
 
   onCategoryChange = (event) => {
     // this.setState({ categoryValue: event.target.value })
     this.fetchProducts(this.state.searchKeyword, event.target.value)
+    const urlParams = new URLSearchParams()
+    urlParams.append("q", this.state.searchKeyword)
+    urlParams.append("c", event.target.value)
+    this.props.history.replace({
+      pathname: "/search",
+      search: urlParams.toString()
+    })
   }
 
   onSearchKeywordChange = (event) => {
@@ -41,6 +52,13 @@ class SearchPage extends React.Component {
     if (this.searchTimeOut) clearTimeout(this.searchTimeOut)
     this.searchTimeOut = setTimeout(() => {
       this.fetchProducts(searchText, this.state.categoryValue)
+      const urlParams = new URLSearchParams()
+      urlParams.append("q", searchText)
+      urlParams.append("c", this.state.categoryValue)
+      this.props.history.replace({
+        pathname: "/search",
+        search: urlParams.toString()
+      })
     }, 500)
   }
 
@@ -103,7 +121,7 @@ class SearchPage extends React.Component {
               </FormControl>
             </Grid>
             <Grid item xs={9}>
-              <TextField fullWidth label="Search" ref={this.searchBar} value={this.state.searchKeyword} onChange={this.onSearchKeywordChange} />
+              <TextField fullWidth label="Search" inputRef={input => this.searchBar = input} value={this.state.searchKeyword} onChange={this.onSearchKeywordChange} />
             </Grid>
           </Grid>
         </Box>

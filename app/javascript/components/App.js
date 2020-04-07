@@ -1,6 +1,7 @@
 import React from "react"
 import PropTypes from "prop-types"
-import { BrowserRouter as Router, Redirect, Link } from 'react-router-dom'
+import { Router, Redirect, Link } from 'react-router-dom'
+import { createBrowserHistory } from "history";
 import Route from './Route'
 import axios from 'axios'
 
@@ -78,6 +79,7 @@ class App extends React.Component {
       sideBarOpen: false,
       productsCollapseOpen: false,
       companyCollapseOpen: false,
+      history: createBrowserHistory(),
     };
   }
 
@@ -121,6 +123,17 @@ class App extends React.Component {
     this.setState({ companyCollapseOpen: !this.state.companyCollapseOpen })
   }
 
+  searchBarKeyDown = (event) => {
+    if (event.keyCode == 13) {
+      this.state.history.push({
+        pathname: "/search",
+        search: `?q=${event.target.value}`,
+      })
+      console.log(event.target)
+      event.target.value = ""
+    }
+  }
+
   render () {
     if (this.state.categories == null || this.state.companyPagesPath == null) {
       return (<div></div>)
@@ -151,7 +164,7 @@ class App extends React.Component {
     const classes = this.props.classes
 
     return (
-      <Router>
+      <Router history={this.state.history}>
         <ThemeProvider theme={theme}>
         <div>
           <AppBar position="static">
@@ -192,6 +205,7 @@ class App extends React.Component {
                         input: classes.inputInput,
                       }}
                       inputProps={{ 'aria-label': 'search' }}
+                      onKeyDown={this.searchBarKeyDown}
                     />
                   </div>
                 </Box>
