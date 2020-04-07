@@ -2,10 +2,10 @@ import React from "react"
 import PropTypes from "prop-types"
 
 import Axios from 'axios'
-import { Box, Typography, CircularProgress, Card, CardContent, Grid, TextField } from "@material-ui/core";
+import { Box, Typography, CircularProgress, Card, CardContent, Grid, TextField, Divider } from "@material-ui/core";
 import { IconButton, Snackbar, Button } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
-import { Delete as DeleteIcon } from "@material-ui/icons";
+import { Delete as DeleteIcon, Payment as PaymentIcon } from "@material-ui/icons";
 
 class ShoppingCart extends React.Component {
   constructor(props) {
@@ -51,6 +51,14 @@ class ShoppingCart extends React.Component {
     this.setState({ undoCartList: null, deleteItemAlert: false })
   }
 
+  onQuantityChange = (item) => (event) => {
+    if (event.target.value !== "") {
+      item.quantity = parseInt(event.target.value)
+      this.setState({ cart: this.state.cart })
+      this.saveItemsToStorage(this.state.cart)
+    }
+  }
+
   fetchProducts = (cart) => {
     if (cart.length > 0) {
       Axios({
@@ -64,13 +72,14 @@ class ShoppingCart extends React.Component {
         this.setState({ cart: cart })
       })
     } else {
-      this.setState({ products: [] })
+      this.setState({ products: [], cart: cart })
     }
   }
 
   render () {
     let subtotal = 0;
     let shoppingCart = <CircularProgress />
+    const noCheckout = this.state.cart == null || this.state.cart.length < 1
 
     if (this.state.cart != null && this.state.products != null && this.state.cart.length < 1) {
       shoppingCart = <Typography variant="h5">There are no items in your shopping cart.</Typography>
@@ -80,7 +89,7 @@ class ShoppingCart extends React.Component {
         const salesPrice = (product.price * (1 - product.discount_percent)).toFixed(2)
         const onSale = product.discount_percent > 0
         const totalPrice = (salesPrice * item.quantity).toFixed(2)
-        subtotal += totalPrice
+        subtotal += parseFloat(totalPrice)
         return (
         <Box mt={3} key={item.id}>
           <Card className="shopping-cart-card">
@@ -106,7 +115,7 @@ class ShoppingCart extends React.Component {
                     <Grid container spacing={2}>
                       <Grid item>
                         <TextField label="Quantity" type="number" variant="outlined" size="small" style={{width: "70px"}}
-                                  value={item.quantity}
+                                  value={item.quantity} onChange={this.onQuantityChange(item)}
                                   inputProps={{ min: "1", step: "1" }}
                                   />
                       </Grid>
@@ -114,6 +123,9 @@ class ShoppingCart extends React.Component {
                         <IconButton onClick={this.onItemDeleteClick(item)}><DeleteIcon /></IconButton>
                       </Grid>
                     </Grid>
+                  </Box>
+                  <Box>
+                    <Typography variant="body1">${ totalPrice }</Typography>
                   </Box>
                 </Grid>
               </Grid>
@@ -129,8 +141,22 @@ class ShoppingCart extends React.Component {
         <Box mb={4}>
           <Typography variant="h4">Your Shopping Cart</Typography>
         </Box>
-        <Box>
+        <Box mb={5}>
           {shoppingCart}
+        </Box>
+        <Divider />
+        <Box mt={5}>
+          <Grid container spacing={2} justify="space-between">
+            <Grid item>
+              <Grid container spacing={1} alignItems="flex-end">
+                <Grid item><Typography variant="h5">Subtotal: </Typography></Grid>
+                <Grid item><Typography variant="h4">${ subtotal.toFixed(2) }</Typography></Grid>
+              </Grid>
+            </Grid>
+            <Grid item>
+              <Button color="primary" size="large" variant="contained" disabled={noCheckout} startIcon={<PaymentIcon />}>Checkout</Button>
+            </Grid>
+          </Grid>
         </Box>
         <Snackbar open={this.state.deleteItemAlert} autoHideDuration={10000} onClose={this.onCartDeleteAlertClose}>
           <Alert elevation={6} variant="filled" severity="error" action={<Button color="primary" size="small" onClick={this.undoDelete}>Undo</Button>}>
