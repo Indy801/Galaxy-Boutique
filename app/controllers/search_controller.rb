@@ -5,6 +5,10 @@ class SearchController < ApplicationController
     # @search_result_desc = generate_category.where(generate_query_desc)
     # @search_result = @search_result_name | @search_result_desc
     @search_result = @search_result_name
+    @total_pages = @search_result_name.page(1).total_pages
+    @page_num = extract_page_param
+    @search_result = @search_result.page(@page_num) if @page_num
+    @page_num ||= 0
   end
 
   private
@@ -46,6 +50,15 @@ class SearchController < ApplicationController
       Product.all
     else
       Category.find(category_id).products
+    end
+  end
+
+  def extract_page_param
+    page_num = params[:page]
+    if !page_num.nil? && page_num.match?(/^\d+$/)
+      page_num.to_i
+    else
+      false
     end
   end
 end
