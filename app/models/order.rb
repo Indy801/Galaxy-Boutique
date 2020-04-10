@@ -4,4 +4,7 @@ class Order < ApplicationRecord
 
   has_many :order_products
   has_many :products, through: :order_products
+
+  validates :order_number, :subtotal, presence: true
+  validates :order_number, uniqueness: true
 end
