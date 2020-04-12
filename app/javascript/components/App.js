@@ -193,23 +193,32 @@ class App extends React.Component {
                     {companyMenuItems}
                   </Menu>
                 </Box>
-                <Box ml={4}>
-                  <div className={classes.search}>
-                    <div className={classes.searchIcon}>
-                      <SearchIcon />
+                <Hidden smDown>
+                  <Box ml={4}>
+                    <div className={classes.search}>
+                      <div className={classes.searchIcon}>
+                        <SearchIcon />
+                      </div>
+                      <InputBase
+                        placeholder="Search…"
+                        classes={{
+                          root: classes.inputRoot,
+                          input: classes.inputInput,
+                        }}
+                        inputProps={{ 'aria-label': 'search' }}
+                        onKeyDown={this.searchBarKeyDown}
+                      />
                     </div>
-                    <InputBase
-                      placeholder="Search…"
-                      classes={{
-                        root: classes.inputRoot,
-                        input: classes.inputInput,
-                      }}
-                      inputProps={{ 'aria-label': 'search' }}
-                      onKeyDown={this.searchBarKeyDown}
-                    />
-                  </div>
-                </Box>
+                  </Box>
+                </Hidden>
                 <div className={classes.grow} />
+                <Hidden mdUp>
+                  <Box>
+                    <IconButton component={Link} to="/search" color="inherit">
+                      <SearchIcon />
+                    </IconButton>
+                  </Box>
+                </Hidden>
                 <Box>
                   <IconButton component={Link} to="/cart" color="inherit">
                     <ShoppingCart />
@@ -265,6 +274,17 @@ class App extends React.Component {
 
                   </List>
                 </SwipeableDrawer>
+                <div className={classes.grow} />
+                <Box>
+                  <IconButton component={Link} to="/search" color="inherit">
+                    <SearchIcon />
+                  </IconButton>
+                </Box>
+                <Box>
+                  <IconButton component={Link} to="/cart" color="inherit">
+                    <ShoppingCart />
+                  </IconButton>
+                </Box>
               </Hidden>
             </Toolbar>
           </AppBar>
