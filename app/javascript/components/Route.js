@@ -9,6 +9,7 @@ import CompanyPages from './views/CompanyPages'
 import ProductDetail from './views/ProductDetail'
 import SearchPage from "./views/SearchPage"
 import ShoppingCart from "./views/ShoppingCart";
+import E404 from './views/E404'
 
 class Route extends React.Component {
   constructor(props) {
@@ -29,6 +30,7 @@ class Route extends React.Component {
         <ReactRoute exact path="/search" component={SearchPage} />
         <ReactRoute exact path="/cart" component={ShoppingCart} />
         { companyPagesRoute }
+        <ReactRoute component={E404} />
       </Switch>
     );
   }
