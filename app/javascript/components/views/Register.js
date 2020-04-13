@@ -51,7 +51,10 @@ class Register extends React.Component {
     Axios({
       method: "post",
       url: "/api/user/signup",
-      data: {user: { email: this.state.email, password: this.state.password }},
+      data: {user: { email: this.state.email,
+        password: this.state.password,
+        alias: this.state.alias,
+      }},
     }).then(response => {
       this.checkRegisterResult(response)
     }).catch(error => {

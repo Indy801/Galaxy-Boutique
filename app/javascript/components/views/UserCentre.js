@@ -47,7 +47,10 @@ class UserCentre extends React.Component {
 
     if (this.state.user != null) {
       userInfo = (
-        <Box mb={4}><Typography variant="body1">Email: {this.state.user.email}</Typography></Box>
+        <Box mb={4}>
+          <Typography variant="body1">Email: {this.state.user.email}</Typography>
+          <Typography variant="body1">Alias: {this.state.user.alias}</Typography>
+        </Box>
       )
     }
 
