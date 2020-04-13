@@ -298,7 +298,7 @@ Devise.setup do |config|
   # config.sign_in_after_change_password = true
 
   config.jwt do |jwt|
-    jwt.secret = "b3aaf90aa0c6f0baf16722c98b683404b2098c0fedd69049b0f5839ab4c440b0c66fbec1a97d581452d57bb758ccc0aad6e00620003c2d3de36f8f4dd4aeaf32"
+    jwt.secret = ENV["DEVISE_SECRET_KEY"]
 
     jwt.dispatch_requests = [
       ["POST", %r{^/login$}]
@@ -307,6 +307,8 @@ Devise.setup do |config|
       ["DELETE", %r{^/logout$}]
     ]
 
-    jwt.expiration_time = 12 * 3600
+    jwt.expiration_time = 1.day.to_i
   end
+
+  config.navigational_formats = []
 end

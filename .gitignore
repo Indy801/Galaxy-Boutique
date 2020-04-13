@@ -38,3 +38,6 @@ yarn-debug.log*
 
 # Ignore the backup folder
 /backups
+
+# Ignore the local configuration file
+/config/local_env.yml
