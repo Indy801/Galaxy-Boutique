@@ -43,7 +43,7 @@ class UserCentre extends React.Component {
   }
 
   render () {
-    let userInfo = <Box><CircularProgress /></Box>
+    let userInfo = <Box mb={4}><CircularProgress /></Box>
 
     if (this.state.user != null) {
       userInfo = (

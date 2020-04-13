@@ -93,7 +93,7 @@ class Login extends React.Component {
     return (
       <div>
         <Container maxWidth="sm">
-          <Box mb={4}><Typography variant="h5">Login</Typography></Box>
+          <Box mb={4}><Typography variant="h4">Login</Typography></Box>
           <Box mb={2}>
             <TextField fullWidth label="Email" value={this.state.email} onChange={this.emailChanged} error={this.state.loginError}
               onKeyDown={this.inputKeyDown}
@@ -106,7 +106,14 @@ class Login extends React.Component {
             />
           </Box>
           <Box>
-            <Button variant="contained" color="primary" onClick={this.confirmLogin}>Login</Button>
+            <Grid container justify="space-between">
+              <Grid item>
+                <Button variant="contained" color="primary" onClick={this.confirmLogin}>Login</Button>
+              </Grid>
+              <Grid item>
+                <Button variant="contained" color="primary" onClick={() => this.props.history.push("/register")}>Register</Button>
+              </Grid>
+            </Grid>
           </Box>
         </Container>
       </div>
