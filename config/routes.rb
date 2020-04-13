@@ -7,7 +7,7 @@ Rails.application.routes.draw do
     get "/shopping_cart", to: "products#shopping_cart", as: "shopping_cart", defaults: { format: :json }
   end
 
-  devise_for :users, path: "", path_names: {
+  devise_for :users, path: "/api/user", path_names: {
     sign_in:      "login",
     sign_out:     "logout",
     registration: "signup"
