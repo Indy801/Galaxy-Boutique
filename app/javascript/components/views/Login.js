@@ -1,7 +1,7 @@
 import React from "react"
 import PropTypes from "prop-types"
 
-import { Box, Grid, TextField, Typography, Button } from "@material-ui/core";
+import { Box, Grid, TextField, Typography, Button, Container } from "@material-ui/core";
 import Axios from "axios";
 import LoginToken from './shared/LoginToken'
 
@@ -13,7 +13,20 @@ class Login extends React.Component {
       password: "",
       loginError: false,
       loggedIn: null,
+      invalidText: null,
     }
+  }
+
+  componentDidMount() {
+    Axios({
+      method: "get",
+      url: "/api/user/info",
+      headers: LoginToken.getHeaderWithToken()
+    }).then(response => {
+      this.props.history.replace("/user")
+    }).catch(error => {
+      // console.log("No loggin")
+    })
   }
 
   emailChanged = (event) => {
@@ -31,13 +44,17 @@ class Login extends React.Component {
       method: "post",
       url: "/api/user/login",
       data: {user: { email: this.state.email, password: this.state.password }},
-      headers: LoginToken.getHeaderWithToken()
     }).then(response => {
       const token = LoginToken.extractToken(response)
       LoginToken.saveToken(token)
-      this.setState({ loggedIn: response.data.email })
+      this.setState({ loggedIn: response.data.email, invalidText: null })
+      if (this.props.history.length > 1) {
+        this.props.history.go(-1)
+      } else {
+        this.props.history.replace("/user")
+      }
     }).catch(error => {
-      this.setState({ loginError: true })
+      this.setState({ loginError: true, invalidText: "Incorrect email or password." })
     })
   }
 
@@ -66,26 +83,32 @@ class Login extends React.Component {
     })
   }
 
+  inputKeyDown = (event) => {
+    if (event.keyCode == 13) {
+      this.confirmLogin(event)
+    }
+  }
+
   render () {
     return (
       <div>
-        <Box ml={50} mr={50}>
+        <Container maxWidth="sm">
           <Box mb={4}><Typography variant="h5">Login</Typography></Box>
           <Box mb={2}>
-            <TextField fullWidth label="Email" value={this.state.email} onChange={this.emailChanged} error={this.state.loginError} />
+            <TextField fullWidth label="Email" value={this.state.email} onChange={this.emailChanged} error={this.state.loginError}
+              onKeyDown={this.inputKeyDown}
+            />
           </Box>
           <Box mb={4}>
-            <TextField fullWidth label="Password" value={this.state.password} onChange={this.passwordChanged} type="password" error={this.state.loginError} />
+            <TextField fullWidth label="Password" value={this.state.password} onChange={this.passwordChanged} type="password" error={this.state.loginError}
+              helperText={this.state.invalidText}
+              onKeyDown={this.inputKeyDown}
+            />
           </Box>
           <Box>
             <Button variant="contained" color="primary" onClick={this.confirmLogin}>Login</Button>
-            <Button variant="contained" color="primary" onClick={this.logout}>Logout</Button>
-            <Button variant="contained" color="primary" onClick={this.grab}>Grab</Button>
           </Box>
-          <Box>
-            <Typography variant="body1">Loggin: {this.state.loggedIn}</Typography>
-          </Box>
-        </Box>
+        </Container>
       </div>
     );
   }
