@@ -298,7 +298,9 @@ Devise.setup do |config|
   # config.sign_in_after_change_password = true
 
   config.jwt do |jwt|
-    jwt.secret = ENV["DEVISE_SECRET_KEY"]
+    # jwt.secret = ENV["DEVISE_SECRET_KEY"]
+    jwt.secret = Rails.application.credentials.secret_key_base
+    # puts jwt.secret
 
     jwt.dispatch_requests = [
       ["POST", %r{^/login$}]
@@ -310,5 +312,5 @@ Devise.setup do |config|
     jwt.expiration_time = 1.day.to_i
   end
 
-  config.navigational_formats = []
+  # config.navigational_formats = []
 end

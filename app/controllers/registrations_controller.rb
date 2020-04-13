@@ -11,4 +11,11 @@ class RegistrationsController < Devise::RegistrationsController
   # def respond_to_on_destroy
   #   head :no_content
   # end
+
+  # def create
+  #   build_resource(sign_up_params)
+
+  #   resource.save
+  #   render_resource(resource)
+  # end
 end
