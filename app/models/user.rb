@@ -1,7 +1,9 @@
 class User < ApplicationRecord
-  has_many :addresses
-  has_many :orders
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :validatable,
+         :jwt_authenticatable, jwt_revocation_strategy: JwtBlacklist
 
-  validates :email, :password, :alias, presence: true
-  validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
+  self.skip_session_storage = %i[http_auth params_auth]
 end

@@ -13,7 +13,7 @@ import { FormControl, withStyles } from '@material-ui/core'
 import { fade } from '@material-ui/core'
 import 'typeface-roboto'
 import { grey, indigo } from "@material-ui/core/colors"
-import { ExpandMore, Menu as MenuIcon, Search as SearchIcon, ShoppingCart } from "@material-ui/icons"
+import { ExpandMore, Menu as MenuIcon, Search as SearchIcon, ShoppingCart, AccountCircle } from "@material-ui/icons"
 
 const theme = createMuiTheme({
   palette: {
@@ -219,6 +219,11 @@ class App extends React.Component {
                     </IconButton>
                   </Box>
                 </Hidden>
+                <Box>
+                  <IconButton component={Link} to="/user" color="inherit">
+                    <AccountCircle />
+                  </IconButton>
+                </Box>
                 <Box>
                   <IconButton component={Link} to="/cart" color="inherit">
                     <ShoppingCart />

@@ -36,5 +36,13 @@
 yarn-debug.log*
 .yarn-integrity
 
+<<<<<<< HEAD
 # Ignore Backups
 /backups
+=======
+# Ignore the backup folder
+/backups
+
+# Ignore the local configuration file
+/config/local_env.yml
+>>>>>>> user-login
