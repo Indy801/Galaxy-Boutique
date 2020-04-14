@@ -4,6 +4,7 @@ import PropTypes from "prop-types"
 import LoginToken from './shared/LoginToken'
 import Axios from 'axios'
 import { Container, Box, Typography, CircularProgress, Button } from "@material-ui/core";
+import AddressSection from './shared/AddressSection'
 
 class UserCentre extends React.Component {
   constructor(props) {
@@ -59,7 +60,11 @@ class UserCentre extends React.Component {
         <Container>
           <Box mb={4}><Typography variant="h3">User Centre</Typography></Box>
           { userInfo }
-          <Box><Button variant="contained" color="primary" onClick={this.logout}>Logout</Button></Box>
+          <Box mb={4}><Button variant="contained" color="primary" onClick={this.logout}>Logout</Button></Box>
+          <Box mb={4}>
+            <Typography variant="h4">Addresses</Typography>
+            <AddressSection disableSelect />
+          </Box>
         </Container>
       </div>
     );

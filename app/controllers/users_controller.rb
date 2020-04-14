@@ -15,17 +15,17 @@ class UsersController < ApplicationController
     end
 
     begin
-      province = Province.find(params[:province])
+      province = Province.find(params[:province_id])
     rescue StandardError
-      render json: { errors: "Province #{params[:province]} not found." }, status: :not_found
+      render json: { errors: "Province #{params[:province_id]} not found." }, status: :not_found
       return
     end
 
     address = province.addresses.build(
-      street_no:   params[:street],
-      apt_no:      params[:apt],
+      street_no:   params[:street_no],
+      apt_no:      params[:apt_no],
       city:        params[:city],
-      postal_code: params[:pcode],
+      postal_code: params[:postal_code],
       user:        @user
     )
 
@@ -52,16 +52,16 @@ class UsersController < ApplicationController
     end
 
     begin
-      province = Province.find(params[:province])
+      province = Province.find(params[:province_id])
     rescue StandardError
-      render json: { errors: "Province #{params[:province]} not found." }, status: :not_found
+      render json: { errors: "Province #{params[:province_id]} not found." }, status: :not_found
       return
     end
 
-    address.street_no = params[:street]
-    address.apt_no = params[:apt]
+    address.street_no = params[:street_no]
+    address.apt_no = params[:apt_no]
     address.city = params[:city]
-    address.postal_code = params[:pcode]
+    address.postal_code = params[:postal_code]
     address.province = province
 
     if address.valid?
@@ -94,6 +94,6 @@ class UsersController < ApplicationController
   end
 
   def check_address_params
-    params[:street] && params[:city] && params[:province] && params[:pcode] && params[:province].match?(/^\d+$/)
+    params[:street_no] && params[:city] && params[:province_id] && params[:postal_code] && params[:province_id].to_s.match?(/^\d+$/)
   end
 end
