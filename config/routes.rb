@@ -17,7 +17,11 @@ Rails.application.routes.draw do
     registrations: "registrations"
   },
   default: { format: :json }
-  get "/api/user/info", to: "users#info", as: "user_info"
+
+  scope "/api/user/" do
+    get "info", to: "users#info", as: "user_info"
+    post "addresses/new", to: "users#new_address", as: "user_address_new"
+  end
 
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
