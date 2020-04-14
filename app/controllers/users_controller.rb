@@ -31,7 +31,8 @@ class UsersController < ApplicationController
 
     if address.valid?
       address.save
-      render json: { address: address }
+      @address = address
+      render template: "users/address.json"
     else
       render json: { errors: address.errors.messages }, status: :bad_request
     end
@@ -65,7 +66,8 @@ class UsersController < ApplicationController
 
     if address.valid?
       address.save
-      render json: { address: address }
+      @address = address
+      render template: "users/address.json"
     else
       render json: { errors: address.errors.messages }, status: :bad_request
     end
@@ -73,11 +75,12 @@ class UsersController < ApplicationController
 
   def get_addresses
     add_list = []
-    @user.addresses.each do |ad|
+    @user.addresses.includes(:province).each do |ad|
       add_list << ad
     end
 
-    render json: { addresses: add_list }
+    @addresses = add_list
+    render template: "users/addresses.json"
   end
 
   private
