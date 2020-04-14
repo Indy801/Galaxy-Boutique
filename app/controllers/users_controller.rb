@@ -6,6 +6,8 @@ class UsersController < ApplicationController
     render json: @user
   end
 
+  # Addresses
+
   def new_address
     unless check_address_params
       render json: { error: "Invalid address params provided." }, status: :bad_request
@@ -67,6 +69,15 @@ class UsersController < ApplicationController
     else
       render json: { errors: address.errors.messages }, status: :bad_request
     end
+  end
+
+  def get_addresses
+    add_list = []
+    @user.addresses.each do |ad|
+      add_list << ad
+    end
+
+    render json: { addresses: add_list }
   end
 
   private

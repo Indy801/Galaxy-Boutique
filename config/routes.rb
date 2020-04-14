@@ -22,6 +22,7 @@ Rails.application.routes.draw do
     get "info", to: "users#info", as: "user_info"
     post "addresses/new", to: "users#new_address", as: "user_address_new"
     post "addresses/edit/:id", to: "users#edit_address", as: "user_address_edit"
+    get "addresses", to: "users#get_addresses", as: "user_get_addresses"
   end
 
   devise_for :admin_users, ActiveAdmin::Devise.config
