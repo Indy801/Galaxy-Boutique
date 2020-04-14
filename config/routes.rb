@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   scope "/api/user/" do
     get "info", to: "users#info", as: "user_info"
     post "addresses/new", to: "users#new_address", as: "user_address_new"
+    post "addresses/edit/:id", to: "users#edit_address", as: "user_address_edit"
   end
 
   devise_for :admin_users, ActiveAdmin::Devise.config
