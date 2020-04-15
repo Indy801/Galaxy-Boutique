@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  order_number: MyString
+  subtotal: 1.5
+  gst: 1.5
+  pst: 1.5
+  hst: 1.5
+  user: one
+  address: one
+  status: one
+
+two:
+  order_number: MyString
+  subtotal: 1.5
+  gst: 1.5
+  pst: 1.5
+  hst: 1.5
+  user: two
+  address: two
+  status: two
