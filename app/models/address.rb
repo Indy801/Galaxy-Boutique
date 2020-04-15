@@ -12,4 +12,8 @@ class Address < ApplicationRecord
       self.postal_code = "#{postal_code[0, 3]} #{postal_code[3, 3]}"
     end
   end
+
+  def name
+    "#{street_no} #{apt_no}, #{city}, #{province.abbr} #{postal_code}"
+  end
 end
