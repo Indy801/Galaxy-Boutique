@@ -5,7 +5,8 @@ import Axios from 'axios'
 import LoginToken from './LoginToken'
 import { Box, Grid, TextField, Typography, FormControl, ThemeProvider, createMuiTheme, Link, CardActions, Collapse } from '@material-ui/core'
 import { Button, Select, InputLabel, MenuItem, Card, CircularProgress, CardActionArea, CardContent, withStyles } from '@material-ui/core'
-import { FormHelperText, Dialog, DialogTitle, DialogActions, DialogContent, DialogContentText } from '@material-ui/core'
+import { FormHelperText, Dialog, DialogTitle, DialogActions, DialogContent, DialogContentText, Snackbar } from '@material-ui/core'
+import { Alert } from '@material-ui/lab'
 import { green, red, blue, grey } from '@material-ui/core/colors'
 import { AddCircle, CheckCircle, FastForward } from '@material-ui/icons'
 
@@ -59,6 +60,9 @@ class AddressSection extends React.Component {
       },
       submittingAddress: false,
       deleteDialog: false,
+      addressSubmittedAlert: false,
+      successMsg: "",
+      addressSubmittedErrorAlert: false,
     }
   }
 
@@ -164,10 +168,12 @@ class AddressSection extends React.Component {
           selectedAddresses: res.data,
           submittingAddress: false,
           editingAddress: false,
+          addressSubmittedAlert: true,
+          successMsg: "updated",
         })
         this.fetchAddress()
       }).catch(error => {
-        this.setState({ submittingAddress: false })
+        this.setState({ submittingAddress: false, addressSubmittedErrorAlert: true })
         console.error("Error submitting address.")
       })
     } else {
@@ -181,10 +187,12 @@ class AddressSection extends React.Component {
           selectedAddresses: res.data,
           submittingAddress: false,
           editingAddress: false,
+          addressSubmittedAlert: true,
+          successMsg: "created",
         })
         this.fetchAddress()
       }).catch(error => {
-        this.setState({ submittingAddress: false })
+        this.setState({ submittingAddress: false, addressSubmittedErrorAlert: true })
         console.error("Error submitting address.")
       })
     }
@@ -208,9 +216,12 @@ class AddressSection extends React.Component {
         selectedAddresses: this.DEFAULT_EMPTY_ADDRESS(),
         submittingAddress: false,
         editingAddress: false,
+        addressSubmittedAlert: true,
+        successMsg: "deleted",
       })
       this.fetchAddress()
     }).catch(er => {
+      this.setState({ submittingAddress: false, addressSubmittedErrorAlert: true })
       console.error("Error occurs when deleting")
     })
   }
@@ -220,6 +231,14 @@ class AddressSection extends React.Component {
       this.deleteAddress()
     }
     this.setState({ deleteDialog: false })
+  }
+
+  onAddressSubmittedAlert = () => {
+    this.setState({ addressSubmittedAlert: false })
+  }
+
+  onAddressSubmittedErrorAlert = () => {
+    this.setState({ addressSubmittedErrorAlert: false })
   }
 
 
@@ -389,6 +408,16 @@ class AddressSection extends React.Component {
               <Button color="primary" onClick={this.deleteDialogClick(true)}>Yes</Button>
             </DialogActions>
           </Dialog>
+          <Snackbar open={this.state.addressSubmittedAlert} autoHideDuration={7000} onClose={this.onAddressSubmittedAlert}>
+            <Alert elevation={6} variant="filled" onClose={this.onAddressSubmittedAlert} severity="success">
+              Address sucessfully { this.state.successMsg }.
+            </Alert>
+          </Snackbar>
+          <Snackbar open={this.state.addressSubmittedErrorAlert} autoHideDuration={7000} onClose={this.onAddressSubmittedErrorAlert}>
+            <Alert elevation={6} variant="filled" onClose={this.onAddressSubmittedErrorAlert} severity="error">
+              Something went wrong while processing address. Please try again.
+            </Alert>
+          </Snackbar>
         </Box>
       </div>
     );
