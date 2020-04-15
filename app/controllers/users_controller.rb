@@ -83,6 +83,18 @@ class UsersController < ApplicationController
     render template: "users/addresses.json"
   end
 
+  def delete_address
+    begin
+      address = @user.addresses.find(params[:id])
+    rescue StandardError
+      render json: { errors: "Address #{params[:id]} not found." }, status: :not_found
+      return
+    end
+
+    address.destroy
+    render json: { message: "Address #{params[:id]} deleted successfully." }
+  end
+
   private
 
   def check_login

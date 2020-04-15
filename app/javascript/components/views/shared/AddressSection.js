@@ -5,8 +5,8 @@ import Axios from 'axios'
 import LoginToken from './LoginToken'
 import { Box, Grid, TextField, Typography, FormControl, ThemeProvider, createMuiTheme, Link, CardActions, Collapse } from '@material-ui/core'
 import { Button, Select, InputLabel, MenuItem, Card, CircularProgress, CardActionArea, CardContent, withStyles } from '@material-ui/core'
-import { FormHelperText } from '@material-ui/core'
-import { green, red, blue } from '@material-ui/core/colors'
+import { FormHelperText, Dialog, DialogTitle, DialogActions, DialogContent, DialogContentText } from '@material-ui/core'
+import { green, red, blue, grey } from '@material-ui/core/colors'
 import { AddCircle, CheckCircle, FastForward } from '@material-ui/icons'
 
 const addressButtonTheme = createMuiTheme({
@@ -18,6 +18,13 @@ const addressButtonTheme = createMuiTheme({
       main: red[500]
     },
   },
+})
+const cancelButtonTheme = createMuiTheme({
+  palette: {
+    primary: {
+      main: grey[500]
+    }
+  }
 })
 
 const style = theme => ({
@@ -51,6 +58,7 @@ class AddressSection extends React.Component {
         postal_code: false,
       },
       submittingAddress: false,
+      deleteDialog: false,
     }
   }
 
@@ -180,6 +188,38 @@ class AddressSection extends React.Component {
         console.error("Error submitting address.")
       })
     }
+  }
+
+  deleteButtonClick = (event) => {
+    this.setState({ deleteDialog: true })
+  }
+
+  deleteAddress = () => {
+    if (!this.state.selectedAddresses.id) {
+      return
+    }
+    this.setState({ submittingAddress: true })
+    Axios({
+      method: "delete",
+      url: `api/user/addresses/del/${this.state.selectedAddresses.id}`,
+      headers: LoginToken.getHeaderWithToken(),
+    }).then(res => {
+      this.setState({
+        selectedAddresses: this.DEFAULT_EMPTY_ADDRESS(),
+        submittingAddress: false,
+        editingAddress: false,
+      })
+      this.fetchAddress()
+    }).catch(er => {
+      console.error("Error occurs when deleting")
+    })
+  }
+
+  deleteDialogClick = (confirm) => (event) => {
+    if (confirm) {
+      this.deleteAddress()
+    }
+    this.setState({ deleteDialog: false })
   }
 
 
@@ -325,12 +365,30 @@ class AddressSection extends React.Component {
             <Box>
               <ThemeProvider theme={addressButtonTheme}>
               <Grid container spacing={4} justify="space-between">
-                <Grid item><Button variant="contained" color="secondary" onClick={this.cancelButtonClick} disabled={this.state.submittingAddress}>Cancel</Button></Grid>
-                <Grid item><Button variant="contained" color="primary" onClick={this.submitButtonClick} disabled={this.state.submittingAddress}>Submit</Button></Grid>
+                <Grid item><Button variant="contained" color="secondary" onClick={this.deleteButtonClick}
+                  disabled={this.state.submittingAddress || !this.state.selectedAddresses.id}>Delete</Button></Grid>
+                <Grid item>
+                  <Grid container spacing={2}>
+                    <Grid item>
+                      <ThemeProvider theme={cancelButtonTheme}>
+                      <Button variant="contained" color="primary" onClick={this.cancelButtonClick} disabled={this.state.submittingAddress}>Cancel</Button>
+                      </ThemeProvider>
+                    </Grid>
+                    <Grid item><Button variant="contained" color="primary" onClick={this.submitButtonClick} disabled={this.state.submittingAddress}>Submit</Button></Grid>
+                  </Grid>
+                </Grid>
               </Grid>
               </ThemeProvider>
             </Box>
           </Collapse>
+          <Dialog open={this.state.deleteDialog}>
+            <DialogTitle>Delete Confirmation</DialogTitle>
+            <DialogContent><DialogContentText>Are you sure you would like do delete this address?</DialogContentText></DialogContent>
+            <DialogActions>
+              <Button color="primary" onClick={this.deleteDialogClick(false)}>No</Button>
+              <Button color="primary" onClick={this.deleteDialogClick(true)}>Yes</Button>
+            </DialogActions>
+          </Dialog>
         </Box>
       </div>
     );
