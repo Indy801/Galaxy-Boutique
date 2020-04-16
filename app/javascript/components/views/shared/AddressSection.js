@@ -98,11 +98,13 @@ class AddressSection extends React.Component {
       headers: LoginToken.getHeaderWithToken(),
     }).then(response => {
       this.setState({ addresses: response.data.addresses })
+      this.onAddressChange(this.state.selectedAddresses)
     })
   }
 
   addressCardClick = (address) => (event) => {
     this.setState({ selectedAddresses: address })
+    this.onAddressChange(address)
   }
 
   editLinkClick = (address) => (event) => {
@@ -111,6 +113,7 @@ class AddressSection extends React.Component {
 
   newLinkClick = (event) => {
     this.setState({ selectedAddresses: this.DEFAULT_EMPTY_ADDRESS(), editingAddress: true })
+    this.onAddressChange(this.DEFAULT_EMPTY_ADDRESS())
   }
 
   inputChanged = (fieldName) => (event) => {
@@ -160,7 +163,7 @@ class AddressSection extends React.Component {
     if (this.state.selectedAddresses.id) {
       Axios({
         method: "post",
-        url: `api/user/addresses/edit/${this.state.selectedAddresses.id}`,
+        url: `/api/user/addresses/edit/${this.state.selectedAddresses.id}`,
         data: this.state.selectedAddresses,
         headers: LoginToken.getHeaderWithToken(),
       }).then(res => {
@@ -179,7 +182,7 @@ class AddressSection extends React.Component {
     } else {
       Axios({
         method: "post",
-        url: `api/user/addresses/new`,
+        url: `/api/user/addresses/new`,
         data: this.state.selectedAddresses,
         headers: LoginToken.getHeaderWithToken(),
       }).then(res => {
@@ -209,7 +212,7 @@ class AddressSection extends React.Component {
     this.setState({ submittingAddress: true })
     Axios({
       method: "delete",
-      url: `api/user/addresses/del/${this.state.selectedAddresses.id}`,
+      url: `/api/user/addresses/del/${this.state.selectedAddresses.id}`,
       headers: LoginToken.getHeaderWithToken(),
     }).then(res => {
       this.setState({
@@ -241,6 +244,12 @@ class AddressSection extends React.Component {
     this.setState({ addressSubmittedErrorAlert: false })
   }
 
+  onAddressChange = (add) => {
+    if (this.props.addressChange != null) {
+      this.props.addressChange(add)
+    }
+  }
+
 
   render () {
     const classes = this.props.classes
@@ -255,7 +264,9 @@ class AddressSection extends React.Component {
         const selected = this.state.selectedAddresses.id == ad.id
         return (
           <Grid item md={3} key={ad.id}>
-            <Card variant="outlined" className={classes.fullHeight} className={selected && !this.props.disableSelect ? classes.selectedCard : ""}>
+            <Card variant="outlined" className={selected && !this.props.disableSelect ?
+              [classes.selectedCard, classes.fullHeight].join(" ")
+              : classes.fullHeight}>
                 {this.props.disableSelect ? (
                   <CardContent className={classes.fullHeight}>
                   <Box>
@@ -423,5 +434,9 @@ class AddressSection extends React.Component {
     );
   }
 }
+
+AddressSection.propTypes = {
+  addressChange: PropTypes.func
+};
 
 export default withStyles(style)(AddressSection)

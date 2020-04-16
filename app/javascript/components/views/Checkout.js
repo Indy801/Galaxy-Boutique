@@ -1,9 +1,10 @@
 import React from "react"
 import PropTypes from "prop-types"
 
-import { Box, Typography, Stepper, Step, StepLabel, Grid, Hidden, FormControl, Select, Button } from "@material-ui/core";
+import { Box, Typography, Stepper, Step, StepLabel, Grid, Hidden, FormControl, Select, Button, CircularProgress } from "@material-ui/core";
 import { Paper, Divider, createMuiTheme, ThemeProvider, TextField, InputLabel, MenuItem } from "@material-ui/core";
 import { green, red } from "@material-ui/core/colors";
+import AddressSection from "./shared/AddressSection";
 
 const stepperTheme = createMuiTheme({
   palette: {
@@ -25,6 +26,23 @@ const addressButtonTheme = createMuiTheme({
 })
 
 class Checkout extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      currentAddress: null,
+      cart: null,
+    }
+  }
+
+  changeAddress = (add) => {
+    this.setState({ currentAddress: add })
+  }
+
+  componentDidMount() {
+    const cart = localStorage.getItem('cart') == null ? [] : JSON.parse(localStorage.getItem('cart'))
+    this.setState({ cart: cart })
+  }
+
   render () {
     return (
       <div>
@@ -45,52 +63,24 @@ class Checkout extends React.Component {
           </Grid>
           <Grid container spacing={2} justify="space-between">
             <Grid item md={9} xs={12}>
-              <Box p={2}>
-                <Box mb={2}>
-                  <Typography variant="h5">New Address</Typography>
-                </Box>
-                <Box mb={1}>
-                  <TextField fullWidth label="Street" />
-                </Box>
-                <Box mb={1}>
-                  <TextField fullWidth label="Apartment" />
-                </Box>
-                <Box mb={1}>
-                  <Grid container spacing={2} >
-                    <Grid item sm={4} xs={12}>
-                      <TextField fullWidth label="City" />
-                    </Grid>
-                    <Grid item sm={4} xs={12}>
-                      <FormControl fullWidth className="category-select">
-                        <InputLabel>Province</InputLabel>
-                        <Select>
-                          <MenuItem value={1}>Manitoba</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </Grid>
-                    <Grid item sm={4} xs={12}>
-                      <TextField fullWidth label="Postal Code" />
-                    </Grid>
-                  </Grid>
-                </Box>
-                <Box>
-                  <ThemeProvider theme={addressButtonTheme}>
-                  <Grid container spacing={4} justify="space-between">
-                    <Grid item><Button variant="contained" color="secondary">Cancel</Button></Grid>
-                    <Grid item><Button variant="contained" color="primary">Submit</Button></Grid>
-                  </Grid>
-                  </ThemeProvider>
-                </Box>
-              </Box>
+              <AddressSection addressChange={this.changeAddress} />
             </Grid>
             <Grid item md={3} xs={12}>
               <Paper>
                 <Box p={4}>
-                  <Typography variant="h6">Items: 1</Typography>
-                  <Typography variant="body1">Original Total: $10</Typography>
-                  <Typography variant="body1">Discount: -$5</Typography>
-                  <Divider />
-                  <Typography variant="h5">Subtotal: $5</Typography>
+                {
+                  this.state.cart ? (
+                    <div>
+                      <Typography variant="h6">Items: {this.state.cart.length}</Typography>
+                      <Typography variant="body1">Original Total: $10</Typography>
+                      <Typography variant="body1">Discount: -$5</Typography>
+                      <Divider />
+                      <Typography variant="h5">Subtotal: $5</Typography>
+                    </div>
+                  ) : (
+                    <CircularProgress />
+                  )
+                }
                 </Box>
               </Paper>
             </Grid>

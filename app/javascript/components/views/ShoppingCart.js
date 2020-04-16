@@ -6,6 +6,7 @@ import { Box, Typography, CircularProgress, Card, CardContent, Grid, TextField, 
 import { IconButton, Snackbar, Button } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { Delete as DeleteIcon, Payment as PaymentIcon } from "@material-ui/icons";
+import { Link } from 'react-router-dom'
 
 class ShoppingCart extends React.Component {
   constructor(props) {
@@ -154,7 +155,10 @@ class ShoppingCart extends React.Component {
               </Grid>
             </Grid>
             <Grid item>
-              <Button color="primary" size="large" variant="contained" disabled={noCheckout} startIcon={<PaymentIcon />}>Checkout</Button>
+              <Button color="primary" size="large" variant="contained" disabled={noCheckout}
+              component={Link}
+              to="/cart/checkout"
+              startIcon={<PaymentIcon />}>Checkout</Button>
             </Grid>
           </Grid>
         </Box>
