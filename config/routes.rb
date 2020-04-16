@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     resources :pages, param: :url_link, only: %i[index show], defaults: { format: :json }
     get "search", to: "search#search", as: "search", defaults: { format: :json }
     get "/shopping_cart", to: "products#shopping_cart", as: "shopping_cart", defaults: { format: :json }
+    post "/checkout/preview", to: "checkout#preview", as: "checkout_preview", defaults: { format: :json }
   end
 
   devise_for :users, path: "/api/user", path_names: {
