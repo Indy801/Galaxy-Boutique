@@ -42,9 +42,9 @@ class CheckoutController < ApplicationController
         @pst = (@total * address.province.pst_rate).round(2) if address.province.pst_rate
         @hst = (@total * address.province.hst_rate).round(2) if address.province.hst_rate
         @grand_total = @total + (@gst || 0) + (@pst || 0) + (@hst || 0)
+        @grand_total = @grand_total.round(2)
       end
 
-      @grand_total = @grand_total.round(2)
     else
       render json: { error: "Invalid params." }, status: :bad_request
     end

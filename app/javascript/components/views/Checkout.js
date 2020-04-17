@@ -6,7 +6,7 @@ import LoginToken from './shared/LoginToken'
 import { Box, Typography, Stepper, Step, StepLabel, Grid, Hidden, FormControl, Select, Button, CircularProgress } from "@material-ui/core";
 import { Paper, Divider, createMuiTheme, ThemeProvider, TextField, InputLabel, MenuItem } from "@material-ui/core";
 import { green, red } from "@material-ui/core/colors";
-import { Receipt, MonetizationOn, ArrowBack } from "@material-ui/icons";
+import { Receipt, MonetizationOn, ArrowBack, CheckCircle, Payment } from "@material-ui/icons";
 import AddressSection from "./shared/AddressSection";
 import OrderDetail from './shared/OrderDetail'
 
@@ -34,6 +34,7 @@ class Checkout extends React.Component {
       cart: null,
       order: null,
       curStep: 0,
+      placingOrder: false,
     }
   }
 
@@ -84,6 +85,21 @@ class Checkout extends React.Component {
     )
   }
 
+  placeOrderClick = (event) => {
+    this.setState({ placingOrder: true })
+    Axios({
+      method: "post",
+      url: "/api/checkout/place",
+      data: { cart: this.state.cart, address: this.state.currentAddress.id },
+      headers: LoginToken.getHeaderWithToken()
+    }).then(res => {
+      localStorage.setItem('cart', JSON.stringify([]))
+      this.setState({ placingOrder: false, curStep: 2 })
+    }).catch(err => {
+      this.setState({ placingOrder: false })
+    })
+  }
+
   render () {
     let nextButton;
     let stepSection;
@@ -100,10 +116,20 @@ class Checkout extends React.Component {
           <React.Fragment>
             <OrderDetail address={this.state.currentAddress} order={this.state.order.order} />
             <ThemeProvider theme={backButtonTheme}><Button variant="contained" color="primary" startIcon={<ArrowBack/>}
-            onClick={this.backButtonClick}>Back</Button></ThemeProvider>
+            onClick={this.backButtonClick} disabled={this.state.placingOrder}>Back</Button></ThemeProvider>
           </React.Fragment>
         )
-        nextButton = <Button variant="contained" color="primary" startIcon={<MonetizationOn/>}>Place Order</Button>
+        nextButton = <Button variant="contained" color="primary" startIcon={<MonetizationOn/>}
+        disabled={this.state.placingOrder} onClick={this.placeOrderClick}>Place Order</Button>
+        break;
+      case 2:
+        stepSection = (
+          <React.Fragment>
+            <CheckCircle style={{color: green[500]}} />
+            <Typography variant="h5">Order successfully placed! Payment is in development.</Typography>
+          </React.Fragment>
+        )
+        nextButton = <Button variant="contained" color="primary" startIcon={<Payment/>}>Pay Now</Button>
         break;
     }
 
