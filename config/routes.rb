@@ -26,6 +26,7 @@ Rails.application.routes.draw do
     post "addresses/edit/:id", to: "users#edit_address", as: "user_address_edit"
     get "addresses", to: "users#get_addresses", as: "user_address_get"
     delete "addresses/del/:id", to: "users#delete_address", as: "user_address_delete"
+    get "orders", to: "users#orders", as: "user_orders"
   end
 
   devise_for :admin_users, ActiveAdmin::Devise.config

@@ -95,6 +95,11 @@ class UsersController < ApplicationController
     render json: { message: "Address #{params[:id]} deleted successfully." }
   end
 
+  def orders
+    orders = @user.orders
+    render json: { orders: orders }
+  end
+
   private
 
   def check_login
