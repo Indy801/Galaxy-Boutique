@@ -29,13 +29,13 @@ class OrderDetail extends React.Component {
       itemCards = order.map(item => {
         return (
           <Box mt={3} key={item.detail.id}>
-          <Card className="shopping-cart-card">
+          <Card className="order-detail-card">
             <CardContent>
               <Grid container spacing={2}>
-                <Grid item sm={2}>
+                <Grid item sm={1}>
                   <img src={item.detail.image} alt={item.detail.name} />
                 </Grid>
-                <Grid item sm={10}>
+                <Grid item sm={11}>
                   <Typography variant="h5">{ item.detail.name }</Typography>
                   <Typography variant="body1">Quantity: { item.quantity }</Typography>
                   <Typography variant="body1">${ item.sale_price.toFixed(2) }</Typography>

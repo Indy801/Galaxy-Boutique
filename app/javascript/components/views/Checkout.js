@@ -53,6 +53,10 @@ class Checkout extends React.Component {
       headers: LoginToken.getHeaderWithToken()
     }).then(res => {
       this.setState({ order: res.data })
+    }).catch(err => {
+      if (err.response.status == 401) {
+        this.props.history.push("/login")
+      }
     })
   }
 
@@ -175,9 +179,9 @@ class Checkout extends React.Component {
                         (
                           <React.Fragment>
                           <Box mt={1} mb={1}>
-                            { this.state.order.gst ? this.displayAmount("GST:", this.state.order.gst, "body1") : null }
-                            { this.state.order.pst ? this.displayAmount("PST:", this.state.order.pst, "body1") : null }
-                            { this.state.order.hst ? this.displayAmount("HST:", this.state.order.hst, "body1") : null }
+                            { this.state.order.gst != null ? this.displayAmount("GST:", this.state.order.gst, "body1") : null }
+                            { this.state.order.pst != null ? this.displayAmount("PST:", this.state.order.pst, "body1") : null }
+                            { this.state.order.hst != null ? this.displayAmount("HST:", this.state.order.hst, "body1") : null }
                           </Box>
                           <Divider />
                           <Box mt={1}>
