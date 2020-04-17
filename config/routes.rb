@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     get "search", to: "search#search", as: "search", defaults: { format: :json }
     get "/shopping_cart", to: "products#shopping_cart", as: "shopping_cart", defaults: { format: :json }
     post "/checkout/preview", to: "checkout#preview", as: "checkout_preview", defaults: { format: :json }
+    post "/checkout/place", to: "checkout#place_order", as: "checkout_place_order", defaults: { format: :json }
   end
 
   devise_for :users, path: "/api/user", path_names: {

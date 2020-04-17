@@ -19,18 +19,23 @@ class CheckoutController < ApplicationController
       params[:cart].each do |item|
         product_detail = products.find(item[:id]) # N problem
         quantity = item[:quantity]
-        sale_price = (product_detail.price * (1 - product_detail.discount_percent)).round(2) * quantity
+        cur_price = (product_detail.price * (1 - product_detail.discount_percent)).round(2)
+        sale_price = (cur_price * quantity).round(2)
         @total += sale_price
-        @original_total += product_detail.price * quantity
-        @discount_total += (product_detail.price * product_detail.discount_percent).round(2) * quantity
+        @original_total += (product_detail.price * quantity).round(2)
+        @discount_total += (product_detail.price * product_detail.discount_percent * quantity).round(2)
         order_item = {
           detail:     product_detail,
           quantity:   quantity,
+          cur_price:  cur_price,
           sale_price: sale_price
         }
         @order_preview << order_item
       end
-      # result = { order: order_preview, subtotal: total, original_total: original_total, discount_total: discount_total }
+
+      @original_total = @original_total.round(2)
+      @discount_total = @discount_total.round(2)
+      @total = @total.round(2)
 
       if address
         @gst = (@total * address.province.gst_rate).round(2) if address.province.gst_rate
@@ -39,6 +44,30 @@ class CheckoutController < ApplicationController
         @grand_total = @total + (@gst || 0) + (@pst || 0) + (@hst || 0)
       end
 
+      @grand_total = @grand_total.round(2)
+    else
+      render json: { error: "Invalid params." }, status: :bad_request
+    end
+  end
+
+  def place_order
+    address = check_address
+    if check_params && address
+      @subtotal = 0
+      preview
+      order = Order.create(user: @user, address: address, subtotal: @total, gst: @gst, pst: @pst, hst: @hst,
+        order_number: order_number(address),
+        status: Status.find_by(name: "Pending"))
+      puts order.errors.messages
+      @order_preview.each do |order_item|
+        order.order_products.create(
+          product:  order_item[:detail],
+          price:    order_item[:cur_price],
+          quantity: order_item[:quantity]
+        )
+      end
+
+      render template: "checkout/preview"
     else
       render json: { error: "Invalid params." }, status: :bad_request
     end
@@ -73,5 +102,11 @@ class CheckoutController < ApplicationController
         false
       end
     end
+  end
+
+  def order_number(address)
+    address_num = address.id if address
+    timestamp = (Time.now.to_i % 10_000).to_s
+    "R#{@user.id}#{rand(100)}#{address_num}#{rand(10)}#{timestamp}#{rand(20)}"
   end
 end

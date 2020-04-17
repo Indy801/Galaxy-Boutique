@@ -2,7 +2,7 @@ class Order < ApplicationRecord
   belongs_to :user
   belongs_to :address
   belongs_to :status
-  has_many :order_products
+  has_many :order_products, dependent: :delete_all
   has_many :products, through: :order_products
 
   accepts_nested_attributes_for :order_products, allow_destroy: true
@@ -17,5 +17,9 @@ class Order < ApplicationRecord
       errors.add(:pst, "Incorrect tax information.")
       errors.add(:hst, "Incorrect tax information.")
     end
+  end
+
+  def name
+    order_number
   end
 end

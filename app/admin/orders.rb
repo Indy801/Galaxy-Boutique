@@ -23,6 +23,7 @@ ActiveAdmin.register Order do
 
   index do
     selectable_column
+    column :id
     column :order_number
     column :subtotal
     column :gst
@@ -35,11 +36,13 @@ ActiveAdmin.register Order do
     column :num_of_products do |order|
       order.products.size
     end
+    column :status
     actions
   end
 
   show do
     attributes_table do
+      row :id
       row :order_number
       row :subtotal
       row :gst
@@ -52,6 +55,7 @@ ActiveAdmin.register Order do
       row :products do |order|
         order.order_products.map { |p| "#{p.product.name} x #{p.quantity}" }.join(", ").html_safe
       end
+      row :status
     end
     active_admin_comments
   end
