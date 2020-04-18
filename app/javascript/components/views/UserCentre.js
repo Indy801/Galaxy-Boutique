@@ -115,6 +115,7 @@ class UserCentre extends React.Component {
               <CardContent>
                 <Typography variant="h6">{order.order_number}</Typography>
                 <Typography variant="body1">Placed on: {moment(order.created_at).format("MMMM D, YYYY [at] h:mm a")}</Typography>
+                <Typography variant="body1">Status: {order.status.name}</Typography>
                 <Typography variant="body1">Total: ${(order.subtotal + order.gst + order.pst + order.hst).toFixed(2)}</Typography>
                 <ExpandMore className={this.state.orderExpanded == order.id ? [classes.arrowStyle, classes.arrowUp].join(" ") : classes.arrowStyle} />
               </CardContent>
