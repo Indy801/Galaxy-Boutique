@@ -96,8 +96,8 @@ class UsersController < ApplicationController
   end
 
   def orders
-    orders = @user.orders
-    render json: { orders: orders }
+    @orders = @user.orders.includes(:order_products)
+    # render json: { orders: @orders }
   end
 
   private

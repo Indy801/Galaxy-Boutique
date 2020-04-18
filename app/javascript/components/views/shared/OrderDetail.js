@@ -32,10 +32,10 @@ class OrderDetail extends React.Component {
           <Card className="order-detail-card">
             <CardContent>
               <Grid container spacing={2}>
-                <Grid item sm={1}>
+                <Grid item md={1} sm={2}>
                   <img src={item.detail.image} alt={item.detail.name} />
                 </Grid>
-                <Grid item sm={11}>
+                <Grid item md={11} sm={10}>
                   <Typography variant="h5">{ item.detail.name }</Typography>
                   <Typography variant="body1">Quantity: { item.quantity }</Typography>
                   <Typography variant="body1">${ item.sale_price.toFixed(2) }</Typography>
