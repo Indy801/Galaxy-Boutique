@@ -40,9 +40,26 @@ class Checkout extends React.Component {
 
 
   componentDidMount() {
-    const cart = localStorage.getItem('cart') == null ? [] : JSON.parse(localStorage.getItem('cart'))
-    this.setState({ cart: cart })
-    this.getPreviewOrder(cart, null)
+    if (this.props.match.params.id) {
+      Axios({
+        method: "get",
+        url: `/api/checkout/show/${this.props.match.params.id}`,
+        headers: LoginToken.getHeaderWithToken()
+      }).then(res => {
+        if (res.data.status.id == 1) {
+          this.setState({ placingOrder: false, curStep: 1, order: res.data, currentAddress: res.data.address })
+        } else {
+          this.props.history.replace("/404")
+        }
+      }).catch(err => {
+        this.setState({ placingOrder: false })
+        if (err.response.status == 404) this.props.history.replace("/404")
+      })
+    } else {
+      const cart = localStorage.getItem('cart') == null ? [] : JSON.parse(localStorage.getItem('cart'))
+      this.setState({ cart: cart })
+      this.getPreviewOrder(cart, null)
+    }
   }
 
   getPreviewOrder = async (cart, address) => {
@@ -90,18 +107,22 @@ class Checkout extends React.Component {
   }
 
   placeOrderClick = (event) => {
-    this.setState({ placingOrder: true })
-    Axios({
-      method: "post",
-      url: "/api/checkout/place",
-      data: { cart: this.state.cart, address: this.state.currentAddress.id },
-      headers: LoginToken.getHeaderWithToken()
-    }).then(res => {
-      localStorage.setItem('cart', JSON.stringify([]))
-      this.setState({ placingOrder: false, curStep: 2, order: res.data })
-    }).catch(err => {
-      this.setState({ placingOrder: false })
-    })
+    if (!this.state.order.id) {
+      this.setState({ placingOrder: true })
+      Axios({
+        method: "post",
+        url: "/api/checkout/place",
+        data: { cart: this.state.cart, address: this.state.currentAddress.id },
+        headers: LoginToken.getHeaderWithToken()
+      }).then(res => {
+        localStorage.setItem('cart', JSON.stringify([]))
+        this.setState({ placingOrder: false, curStep: 2, order: res.data })
+      }).catch(err => {
+        this.setState({ placingOrder: false })
+      })
+    } else {
+      this.setState({ placingOrder: false, curStep: 2})
+    }
   }
 
   render () {
@@ -120,11 +141,11 @@ class Checkout extends React.Component {
           <React.Fragment>
             <OrderDetail address={this.state.currentAddress} order={this.state.order.products} />
             <ThemeProvider theme={backButtonTheme}><Button variant="contained" color="primary" startIcon={<ArrowBack/>}
-            onClick={this.backButtonClick} disabled={this.state.placingOrder}>Back</Button></ThemeProvider>
+            onClick={this.backButtonClick} disabled={this.state.placingOrder || Boolean(this.state.order.id)}>Back</Button></ThemeProvider>
           </React.Fragment>
         )
         nextButton = <Button variant="contained" color="primary" startIcon={<MonetizationOn/>}
-        disabled={this.state.placingOrder} onClick={this.placeOrderClick}>Place Order</Button>
+        disabled={this.state.placingOrder} onClick={this.placeOrderClick}>{this.state.order.id ? "Make a Payment" : "Place Order"}</Button>
         break;
       case 2:
         stepSection = (
