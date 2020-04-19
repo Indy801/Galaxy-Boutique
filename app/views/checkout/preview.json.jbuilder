@@ -1,4 +1,4 @@
-json.order do
+json.products do
   json.array! @order_preview do |o|
     json.detail do
       json.extract! o[:detail], :id, :name

@@ -4,7 +4,7 @@ ActiveAdmin.register Order do
   #
   # Uncomment all parameters which should be permitted for assignment
   #
-  permit_params :order_number, :subtotal, :gst, :pst, :hst, :user_id, :address_id,
+  permit_params :order_number, :subtotal, :gst, :pst, :hst, :user_id, :address_id, :original_total, :discount_total,
                 :status_id, order_products_attributes: %i[id product_id quantity price _destroy]
 
   form do |f|
@@ -30,6 +30,8 @@ ActiveAdmin.register Order do
     column :pst
     column :hst
     column :user
+    column :original_total
+    column :discount_total
     column :address
     column :created_at
     column :updated_at
@@ -49,6 +51,8 @@ ActiveAdmin.register Order do
       row :pst
       row :hst
       row :user
+      row :original_total
+      row :discount_total
       row :address
       row :created_at
       row :updated_at

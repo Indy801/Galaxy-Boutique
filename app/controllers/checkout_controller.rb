@@ -55,22 +55,31 @@ class CheckoutController < ApplicationController
     if check_params && address
       @subtotal = 0
       preview
-      order = Order.create(user: @user, address: address, subtotal: @total, gst: @gst, pst: @pst, hst: @hst,
+      @order = Order.create(user: @user, address: address, subtotal: @total, gst: @gst, pst: @pst, hst: @hst,
+        original_total: @original_total, discount_total: @discount_total,
         order_number: order_number(address),
         status: Status.find_by(name: "Pending"))
-      puts order.errors.messages
       @order_preview.each do |order_item|
-        order.order_products.create(
+        @order.order_products.create(
           product:  order_item[:detail],
           price:    order_item[:cur_price],
           quantity: order_item[:quantity]
         )
       end
 
-      render template: "checkout/preview"
+      @order_products = @order.order_products
+
+      render template: "checkout/show"
     else
       render json: { error: "Invalid params." }, status: :bad_request
     end
+  end
+
+  def retrieve_order
+    @order = @user.orders.find(params[:id])
+    @order_products = @order.order_products
+
+    render template: "checkout/show"
   end
 
   private

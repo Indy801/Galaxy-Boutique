@@ -98,7 +98,7 @@ class Checkout extends React.Component {
       headers: LoginToken.getHeaderWithToken()
     }).then(res => {
       localStorage.setItem('cart', JSON.stringify([]))
-      this.setState({ placingOrder: false, curStep: 2 })
+      this.setState({ placingOrder: false, curStep: 2, order: res.data })
     }).catch(err => {
       this.setState({ placingOrder: false })
     })
@@ -118,7 +118,7 @@ class Checkout extends React.Component {
       case 1:
         stepSection = (
           <React.Fragment>
-            <OrderDetail address={this.state.currentAddress} order={this.state.order.order} />
+            <OrderDetail address={this.state.currentAddress} order={this.state.order.products} />
             <ThemeProvider theme={backButtonTheme}><Button variant="contained" color="primary" startIcon={<ArrowBack/>}
             onClick={this.backButtonClick} disabled={this.state.placingOrder}>Back</Button></ThemeProvider>
           </React.Fragment>
@@ -167,7 +167,7 @@ class Checkout extends React.Component {
                   this.state.order ? (
                     <div>
                       <Box mb={1}>
-                        <Typography variant="h6">Items: {this.state.order.order.length}</Typography>
+                        <Typography variant="h6">Items: {this.state.order.products.length}</Typography>
                         {this.displayAmount("Original Total:", this.state.order.original_total, "body1")}
                         {this.displayAmount("Discount:", this.state.order.discount_total, "body1", true)}
                       </Box>
