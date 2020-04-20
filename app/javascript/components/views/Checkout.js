@@ -3,12 +3,15 @@ import PropTypes from "prop-types"
 
 import Axios from 'axios'
 import LoginToken from './shared/LoginToken'
-import { Box, Typography, Stepper, Step, StepLabel, Grid, Hidden, FormControl, Select, Button, CircularProgress } from "@material-ui/core";
-import { Paper, Divider, createMuiTheme, ThemeProvider, TextField, InputLabel, MenuItem } from "@material-ui/core";
+import { Box, Typography, Stepper, Step, StepLabel, Grid, Hidden, FormControl, Select, Button, CircularProgress, CardContent } from "@material-ui/core";
+import { Paper, Divider, createMuiTheme, ThemeProvider, TextField, InputLabel, MenuItem, Card } from "@material-ui/core";
 import { green, red } from "@material-ui/core/colors";
-import { Receipt, MonetizationOn, ArrowBack, CheckCircle, Payment } from "@material-ui/icons";
+import { Receipt, MonetizationOn, ArrowBack, CheckCircle, Payment, QueryBuilder } from "@material-ui/icons";
 import AddressSection from "./shared/AddressSection";
 import OrderDetail from './shared/OrderDetail'
+
+import { loadStripe } from "@stripe/stripe-js"
+import { Elements, CardElement, CardNumberElement, CardCvcElement, CardExpiryElement } from "@stripe/react-stripe-js"
 
 const stepperTheme = createMuiTheme({
   palette: {
@@ -35,6 +38,7 @@ class Checkout extends React.Component {
       order: null,
       curStep: 0,
       placingOrder: false,
+      stripePromise: loadStripe('pk_test_gxH1mVNQS3MsZy7ndigb9bbk00zOlXJaLU'),
     }
   }
 
@@ -125,6 +129,10 @@ class Checkout extends React.Component {
     }
   }
 
+  payLater = (event) => {
+    this.props.history.replace("/")
+  }
+
   render () {
     let nextButton;
     let stepSection;
@@ -148,11 +156,43 @@ class Checkout extends React.Component {
         disabled={this.state.placingOrder} onClick={this.placeOrderClick}>{this.state.order.id ? "Make a Payment" : "Place Order"}</Button>
         break;
       case 2:
+        const CARD_ELEMENT_OPTIONS = {
+          style: {
+            base: {
+              color: "#32325d",
+              fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+              fontSmoothing: "antialiased",
+              fontSize: "24px",
+              "::placeholder": {
+                color: "#aab7c4",
+              },
+            },
+            invalid: {
+              color: "#fa755a",
+              iconColor: "#fa755a",
+            },
+          },
+        };
         stepSection = (
-          <React.Fragment>
-            <CheckCircle style={{color: green[500]}} />
-            <Typography variant="h5">Order successfully placed! Payment is in development.</Typography>
-          </React.Fragment>
+            <React.Fragment>
+              <Box m={5}>
+                <Typography variant="h6">Payment Information</Typography>
+                <Box mt={1}>
+                  <Elements stripe={this.state.stripePromise}>
+                    <CardElement options={CARD_ELEMENT_OPTIONS} />
+                  </Elements>
+                </Box>
+                <Typography variant="body2">Powered by Stripe</Typography>
+              </Box>
+              <Divider />
+              <Box mt={2}>
+                <Grid container justify="space-between">
+                  <Grid item xs={5}></Grid>
+                  <Grid item><Button variant="contained" color="primary" startIcon={<QueryBuilder />} onClick={this.payLater}>Pay Later</Button></Grid>
+                  <Grid item xs={5}></Grid>
+                </Grid>
+              </Box>
+            </React.Fragment>
         )
         nextButton = <Button variant="contained" color="primary" startIcon={<Payment/>}>Pay Now</Button>
         break;
