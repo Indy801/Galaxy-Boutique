@@ -185,6 +185,13 @@ class Checkout extends React.Component {
     } else {
       if (result.paymentIntent.status === 'succeeded') {
         console.log("Payment success")
+        await Axios({
+          method: "post",
+          url: "/api/checkout/mark_paid",
+          data: {order_id: this.state.order.id, stripe_id: result.paymentIntent.id},
+          headers: LoginToken.getHeaderWithToken()
+        })
+
         this.props.history.replace({
           pathname: "/cart/success",
           state: { status: "success" }

@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     post "/checkout/place", to: "checkout#place_order", as: "checkout_place_order", defaults: { format: :json }
     get "/checkout/show/:id", to: "checkout#retrieve_order", as: "checkout_show_order", defaults: { format: :json }
     get "/checkout/pay/:id", to: "checkout#payment", as: "checkout_payment", defaults: { format: :json }
+    post "/checkout/mark_paid", to: "checkout#mark_paid", as: "checkout_mark_paid", defaults: { format: :json }
   end
 
   devise_for :users, path: "/api/user", path_names: {

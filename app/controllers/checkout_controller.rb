@@ -92,6 +92,18 @@ class CheckoutController < ApplicationController
     render json: { client_secret: intent.client_secret }
   end
 
+  def mark_paid
+    if params[:stripe_id] && params[:order_id]
+      order = @user.orders.find(params[:order_id])
+      order.stripe_id = params[:stripe_id]
+      order.status = Status.find_by(name: "Paid")
+      order.save
+      head :no_content
+    else
+      render json: { error: "Invalid params." }, status: :bad_request
+    end
+  end
+
   private
 
   def check_login

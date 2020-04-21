@@ -30,8 +30,8 @@ ActiveAdmin.register Order do
     column :pst
     column :hst
     column :user
-    column :original_total
-    column :discount_total
+    # column :original_total
+    # column :discount_total
     column :address
     column :created_at
     column :updated_at
@@ -39,6 +39,7 @@ ActiveAdmin.register Order do
       order.products.size
     end
     column :status
+    # column :stripe_id
     actions
   end
 
@@ -60,6 +61,7 @@ ActiveAdmin.register Order do
         order.order_products.map { |p| "#{p.product.name} x #{p.quantity}" }.join(", ").html_safe
       end
       row :status
+      row :stripe_id
     end
     active_admin_comments
   end
