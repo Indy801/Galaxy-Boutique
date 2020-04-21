@@ -5,7 +5,8 @@ import LoginToken from './shared/LoginToken'
 import Axios from 'axios'
 import { Container, Box, Typography, CircularProgress, Button, Card, CardContent, Divider, Grid, Collapse, CardActionArea } from "@material-ui/core";
 import { withStyles } from "@material-ui/core";
-import { ExpandMore } from "@material-ui/icons";
+import { ExpandMore, MonetizationOn } from "@material-ui/icons";
+import { Link } from "react-router-dom"
 import AddressSection from './shared/AddressSection'
 import OrderDetail from './shared/OrderDetail'
 import moment from 'moment'
@@ -125,7 +126,7 @@ class UserCentre extends React.Component {
                   <OrderDetail address={order.address} order={order.products} />
                   <Divider />
                   <Box mt={2}>
-                    <Grid container>
+                    <Grid container spacing={4} justify="space-between" alignItems="flex-end">
                       <Grid item sm={5} xs={12}>
                         { this.displayAmount("Subtotal:", order.subtotal, "body1") }
                         { order.gst != null ? this.displayAmount("GST:", order.gst, "body1") : null }
@@ -133,6 +134,12 @@ class UserCentre extends React.Component {
                         { order.hst != null ? this.displayAmount("HST:", order.hst, "body1") : null }
                         { this.displayAmount("Total:", order.total, "h6") }
                       </Grid>
+                      { order.status.id == 1 ? (
+                        <Grid item>
+                          <Button variant="contained" color="primary" startIcon={<MonetizationOn/>} component={Link}
+                          to={`/cart/checkout/${order.id}`}>Make a Payment</Button>
+                        </Grid>
+                      ) : null }
                     </Grid>
                   </Box>
                 </CardContent>

@@ -96,7 +96,7 @@ class UsersController < ApplicationController
   end
 
   def orders
-    @orders = @user.orders.includes(:order_products)
+    @orders = @user.orders.includes(:order_products).order(created_at: :desc)
     # render json: { orders: @orders }
   end
 
