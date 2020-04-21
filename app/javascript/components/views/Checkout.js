@@ -41,6 +41,7 @@ class Checkout extends React.Component {
       stripePromise: loadStripe('pk_test_gxH1mVNQS3MsZy7ndigb9bbk00zOlXJaLU'),
       user: null,
       payButtonDisable: false,
+      placeSuccess: false,
     }
   }
 
@@ -132,14 +133,12 @@ class Checkout extends React.Component {
         headers: LoginToken.getHeaderWithToken()
       }).then(res => {
         localStorage.setItem('cart', JSON.stringify([]))
-        this.setState({ placingOrder: false, curStep: 2, order: res.data })
-        this.getPaymentIntent(res.data)
+        this.setState({ placingOrder: false, curStep: 2, order: res.data, placeSuccess: true })
       }).catch(err => {
         this.setState({ placingOrder: false })
       })
     } else {
       this.setState({ placingOrder: false, curStep: 2})
-      this.getPaymentIntent(this.state.order)
     }
   }
 
@@ -155,18 +154,26 @@ class Checkout extends React.Component {
     // console.log(this.stripeObj)
   }
 
-  getPaymentIntent = (order) => {
-    Axios({
+  getPaymentIntent = async (order) => {
+    this.setState({ payButtonDisable: true })
+    const res = await Axios({
       method: "get",
       url: `/api/checkout/pay/${order.id}`,
       headers: LoginToken.getHeaderWithToken()
-    }).then(res => {
-      this.paymentIntent = res.data.client_secret
     })
+    // }).then(res => {
+    //   this.paymentIntent = res.data.client_secret
+    //   this.setState({ payButtonDisable: false })
+    // })
+    this.paymentIntent = res.data.client_secret
+    // this.setState({ payButtonDisable: false })
   }
 
   payToStripe = async () => {
     this.setState({ payButtonDisable: true })
+    if (!this.paymentIntent) {
+      await this.getPaymentIntent(this.state.order)
+    }
     const cardElement = this.stripeElement.getElement(CardElement);
     const stripe = this.stripeObj
     const result = await stripe.confirmCardPayment(this.paymentIntent, {
@@ -242,6 +249,14 @@ class Checkout extends React.Component {
         };
         stepSection = (
             <React.Fragment>
+              { this.state.placeSuccess ? (
+              <Box my={2}>
+                <Grid container alignContent="center">
+                  <Grid item><CheckCircle style={{color: green[500]}} /></Grid>
+                  <Grid item><Typography variant="h6">Order successfully placed!</Typography></Grid>
+                </Grid>
+              </Box>
+              ) : null }
               <Box m={5}>
                 <Typography variant="h6">Payment Information</Typography>
                 <Box mt={1}>
