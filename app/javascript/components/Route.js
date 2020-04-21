@@ -14,6 +14,7 @@ import Checkout from './views/Checkout'
 import Login from './views/Login'
 import UserCentre from './views/UserCentre'
 import Register from './views/Register'
+import PaymentSuccess from "./views/PaymentSuccess"
 
 class Route extends React.Component {
   constructor(props) {
@@ -35,6 +36,7 @@ class Route extends React.Component {
         <ReactRoute exact path="/cart" component={ShoppingCart} />
         <ReactRoute exact path="/cart/checkout" component={Checkout} />
         <ReactRoute exact path="/cart/checkout/:id" component={Checkout} />
+        <ReactRoute exact path="/cart/success" component={PaymentSuccess} />
         <ReactRoute exact path="/login" component={Login} />
         <ReactRoute exact path="/user" component={UserCentre} />
         <ReactRoute exact path="/register" component={Register} />

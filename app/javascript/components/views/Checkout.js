@@ -185,6 +185,10 @@ class Checkout extends React.Component {
     } else {
       if (result.paymentIntent.status === 'succeeded') {
         console.log("Payment success")
+        this.props.history.replace({
+          pathname: "/cart/success",
+          state: { status: "success" }
+        })
       }
     }
   }
