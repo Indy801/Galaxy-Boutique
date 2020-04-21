@@ -11,7 +11,7 @@ import AddressSection from "./shared/AddressSection";
 import OrderDetail from './shared/OrderDetail'
 
 import { loadStripe } from "@stripe/stripe-js"
-import { Elements, CardElement, CardNumberElement, CardCvcElement, CardExpiryElement } from "@stripe/react-stripe-js"
+import { Elements, CardElement, ElementsConsumer } from "@stripe/react-stripe-js"
 
 const stepperTheme = createMuiTheme({
   palette: {
@@ -39,11 +39,23 @@ class Checkout extends React.Component {
       curStep: 0,
       placingOrder: false,
       stripePromise: loadStripe('pk_test_gxH1mVNQS3MsZy7ndigb9bbk00zOlXJaLU'),
+      user: null,
+      payButtonDisable: false,
     }
   }
 
 
   componentDidMount() {
+    Axios({
+      method: "get",
+      url: "/api/user/info",
+      headers: LoginToken.getHeaderWithToken()
+    }).then(response => {
+      this.setState({ user: response.data })
+    }).catch(error => {
+      this.props.history.push("/login")
+    })
+
     if (this.props.match.params.id) {
       Axios({
         method: "get",
@@ -121,16 +133,60 @@ class Checkout extends React.Component {
       }).then(res => {
         localStorage.setItem('cart', JSON.stringify([]))
         this.setState({ placingOrder: false, curStep: 2, order: res.data })
+        this.getPaymentIntent(res.data)
       }).catch(err => {
         this.setState({ placingOrder: false })
       })
     } else {
       this.setState({ placingOrder: false, curStep: 2})
+      this.getPaymentIntent(this.state.order)
     }
   }
 
   payLater = (event) => {
     this.props.history.replace("/")
+  }
+
+  payNow = async (event) => {
+    if (this.stripeElement && this.stripeObj) {
+      this.payToStripe()
+    }
+    // console.log(this.stripeElement)
+    // console.log(this.stripeObj)
+  }
+
+  getPaymentIntent = (order) => {
+    Axios({
+      method: "get",
+      url: `/api/checkout/pay/${order.id}`,
+      headers: LoginToken.getHeaderWithToken()
+    }).then(res => {
+      this.paymentIntent = res.data.client_secret
+    })
+  }
+
+  payToStripe = async () => {
+    this.setState({ payButtonDisable: true })
+    const cardElement = this.stripeElement.getElement(CardElement);
+    const stripe = this.stripeObj
+    const result = await stripe.confirmCardPayment(this.paymentIntent, {
+      payment_method: {
+        type: "card",
+        card: cardElement,
+        billing_details: {
+          email: this.state.user.email,
+        }
+      }
+    })
+
+    if (result.error) {
+      console.log(result.error.message)
+      this.setState({ payButtonDisable: false })
+    } else {
+      if (result.paymentIntent.status === 'succeeded') {
+        console.log("Payment success")
+      }
+    }
   }
 
   render () {
@@ -179,7 +235,13 @@ class Checkout extends React.Component {
                 <Typography variant="h6">Payment Information</Typography>
                 <Box mt={1}>
                   <Elements stripe={this.state.stripePromise}>
-                    <CardElement options={CARD_ELEMENT_OPTIONS} />
+                    <ElementsConsumer>
+                      {({elements, stripe}) => {
+                        this.stripeElement = elements
+                        this.stripeObj = stripe
+                        return (<CardElement options={CARD_ELEMENT_OPTIONS} />)
+                      }}
+                    </ElementsConsumer>
                   </Elements>
                 </Box>
                 <Typography variant="body2">Powered by Stripe</Typography>
@@ -188,13 +250,13 @@ class Checkout extends React.Component {
               <Box mt={2}>
                 <Grid container justify="space-between">
                   <Grid item xs={5}></Grid>
-                  <Grid item><Button variant="contained" color="primary" startIcon={<QueryBuilder />} onClick={this.payLater}>Pay Later</Button></Grid>
+                  <Grid item><Button variant="contained" color="primary" startIcon={<QueryBuilder />} onClick={this.payLater} disabled>Pay Later</Button></Grid>
                   <Grid item xs={5}></Grid>
                 </Grid>
               </Box>
             </React.Fragment>
         )
-        nextButton = <Button variant="contained" color="primary" startIcon={<Payment/>}>Pay Now</Button>
+        nextButton = <Button variant="contained" color="primary" startIcon={<Payment/>} onClick={this.payNow} disabled={this.state.payButtonDisable}>Pay Now</Button>
         break;
     }
 

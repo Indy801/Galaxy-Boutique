@@ -82,6 +82,16 @@ class CheckoutController < ApplicationController
     render template: "checkout/show"
   end
 
+  def payment
+    order = @user.orders.find(params[:id])
+    amount_to_pay = (order.subtotal + (order.gst || 0) + (order.pst || 0) + (order.hst || 0)).round(2)
+    intent = Stripe::PaymentIntent.create(
+      amount:   (amount_to_pay * 100).to_i,
+      currency: "cad"
+    )
+    render json: { client_secret: intent.client_secret }
+  end
+
   private
 
   def check_login
