@@ -10,6 +10,7 @@ import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { Alert } from '@material-ui/lab'
 import { Link as RouterLink } from 'react-router-dom'
 import moment from 'moment'
+import accounting from 'accounting'
 
 class ProductDetail extends React.Component {
   constructor(props) {
@@ -74,10 +75,10 @@ class ProductDetail extends React.Component {
     })
 
     const discountPercent = ((product.discount_price - product.price) / product.price * 100).toFixed(0)
-    const priceText = (product.discount_price == null) ? (<Typography variant="h4">${product.price}</Typography>) : (
+    const priceText = (product.discount_price == null) ? (<Typography variant="h4">{accounting.formatMoney(product.price)}</Typography>) : (
       <ThemeProvider theme={saleStyle}>
-        <Typography variant="h5" className="original-price-cross">${product.price}</Typography>
-        <Typography variant="h4">${product.discount_price}</Typography>
+        <Typography variant="h5" className="original-price-cross">{accounting.formatMoney(product.price)}</Typography>
+        <Typography variant="h4">{accounting.formatMoney(product.discount_price)}</Typography>
         <Chip label={`${discountPercent}% off`} color="primary" />
       </ThemeProvider>
     )

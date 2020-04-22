@@ -10,6 +10,7 @@ import { Link } from "react-router-dom"
 import AddressSection from './shared/AddressSection'
 import OrderDetail from './shared/OrderDetail'
 import moment from 'moment'
+import accounting from 'accounting'
 
 const style = theme => ({
   arrowStyle: {
@@ -79,7 +80,7 @@ class UserCentre extends React.Component {
           <Typography variant={variant}>{label}</Typography>
         </Grid>
         <Grid item>
-          <Typography variant={variant}>{negative ? "-" : null}${amount.toFixed(2)}</Typography>
+          <Typography variant={variant}>{negative ? "-" : null}{accounting.formatMoney(amount)}</Typography>
         </Grid>
       </Grid>
     )
@@ -117,7 +118,7 @@ class UserCentre extends React.Component {
                 <Typography variant="h6">{order.order_number}</Typography>
                 <Typography variant="body1">Placed on: {moment(order.created_at).format("MMMM D, YYYY [at] h:mm a")}</Typography>
                 <Typography variant="body1">Status: {order.status.name}</Typography>
-                <Typography variant="body1">Total: ${(order.subtotal + order.gst + order.pst + order.hst).toFixed(2)}</Typography>
+                <Typography variant="body1">Total: {accounting.formatMoney(order.subtotal + order.gst + order.pst + order.hst)}</Typography>
                 <ExpandMore className={this.state.orderExpanded == order.id ? [classes.arrowStyle, classes.arrowUp].join(" ") : classes.arrowStyle} />
               </CardContent>
               </CardActionArea>

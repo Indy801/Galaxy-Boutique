@@ -2,6 +2,7 @@ import React from "react"
 import PropTypes from "prop-types"
 
 import { Card, CardContent, Grid, Box, Divider, Typography, CircularProgress } from '@material-ui/core'
+import accounting from 'accounting'
 
 class OrderDetail extends React.Component {
   constructor(props) {
@@ -38,7 +39,7 @@ class OrderDetail extends React.Component {
                 <Grid item md={11} sm={10}>
                   <Typography variant="h5">{ item.detail.name }</Typography>
                   <Typography variant="body1">Quantity: { item.quantity }</Typography>
-                  <Typography variant="body1">${ item.sale_price.toFixed(2) }</Typography>
+                  <Typography variant="body1">{ accounting.formatMoney(item.sale_price) }</Typography>
                 </Grid>
               </Grid>
             </CardContent>

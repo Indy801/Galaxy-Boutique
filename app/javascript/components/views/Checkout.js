@@ -9,6 +9,7 @@ import { green, red } from "@material-ui/core/colors";
 import { Receipt, MonetizationOn, ArrowBack, CheckCircle, Payment, QueryBuilder } from "@material-ui/icons";
 import AddressSection from "./shared/AddressSection";
 import OrderDetail from './shared/OrderDetail'
+import accounting from 'accounting'
 
 import { loadStripe } from "@stripe/stripe-js"
 import { Elements, CardElement, ElementsConsumer } from "@stripe/react-stripe-js"
@@ -55,7 +56,7 @@ class Checkout extends React.Component {
     }).then(response => {
       this.setState({ user: response.data })
     }).catch(error => {
-      this.props.history.push("/login")
+      // this.props.history.push("/login")
     })
 
     if (this.props.match.params.id) {
@@ -120,7 +121,7 @@ class Checkout extends React.Component {
           <Typography variant={variant}>{label}</Typography>
         </Grid>
         <Grid item>
-          <Typography variant={variant}>{negative ? "-" : null}${amount.toFixed(2)}</Typography>
+          <Typography variant={variant}>{negative ? "-" : null}{accounting.formatMoney(amount)}</Typography>
         </Grid>
       </Grid>
     )

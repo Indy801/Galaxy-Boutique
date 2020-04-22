@@ -7,6 +7,7 @@ import { IconButton, Snackbar, Button } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { Delete as DeleteIcon, Payment as PaymentIcon } from "@material-ui/icons";
 import { Link } from 'react-router-dom'
+import accounting from 'accounting'
 
 class ShoppingCart extends React.Component {
   constructor(props) {
@@ -104,14 +105,14 @@ class ShoppingCart extends React.Component {
                   {( onSale ? (
                     <Grid container spacing={1}>
                       <Grid item>
-                        <Typography variant="body1" className="original-price-cross">${ product.price }</Typography>
+                        <Typography variant="body1" className="original-price-cross">{ accounting.formatMoney(product.price) }</Typography>
                       </Grid>
                       <Grid item>
-                        <Typography variant="h6">${ salesPrice }</Typography>
+                        <Typography variant="h6">{ accounting.formatMoney(salesPrice) }</Typography>
                       </Grid>
                     </Grid>
                     )
-                  : <Typography variant="h6">${ salesPrice }</Typography>)}
+                  : <Typography variant="h6">{ accounting.formatMoney(salesPrice) }</Typography>)}
                   <Box mt={2}>
                     <Grid container spacing={2}>
                       <Grid item>
@@ -126,7 +127,7 @@ class ShoppingCart extends React.Component {
                     </Grid>
                   </Box>
                   <Box>
-                    <Typography variant="body1">${ totalPrice }</Typography>
+                    <Typography variant="body1">{ accounting.formatMoney(totalPrice) }</Typography>
                   </Box>
                 </Grid>
               </Grid>
@@ -151,7 +152,7 @@ class ShoppingCart extends React.Component {
             <Grid item>
               <Grid container spacing={1} alignItems="flex-end">
                 <Grid item><Typography variant="h5">Subtotal: </Typography></Grid>
-                <Grid item><Typography variant="h4">${ subtotal.toFixed(2) }</Typography></Grid>
+                <Grid item><Typography variant="h4">{ accounting.formatMoney(subtotal) }</Typography></Grid>
               </Grid>
             </Grid>
             <Grid item>
