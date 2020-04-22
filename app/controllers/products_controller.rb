@@ -35,7 +35,7 @@ class ProductsController < ApplicationController
     if params.key?(:ru)
       sql_fragment.push("(date(created_at) <> date(updated_at) AND date(updated_at) >= date('now','-3 day'))")
     end
-    sql_fragment.push("discount_percent > 0") if params.key?(:os)
+    sql_fragment.push("discount_price IS NOT NULL") if params.key?(:os)
     sql_fragment.join(" OR ")
   end
 end

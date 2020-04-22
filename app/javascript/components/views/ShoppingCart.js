@@ -87,8 +87,8 @@ class ShoppingCart extends React.Component {
     } else if (this.state.cart != null && this.state.products != null && this.state.cart.length > 0) {
       shoppingCart = this.state.cart.map((item, index) => {
         const product = this.state.products[index]
-        const salesPrice = (product.price * (1 - product.discount_percent)).toFixed(2)
-        const onSale = product.discount_percent > 0
+        const salesPrice = product.discount_price || product.price
+        const onSale = product.discount_price != null
         const totalPrice = (salesPrice * item.quantity).toFixed(2)
         subtotal += parseFloat(totalPrice)
         return (

@@ -35,7 +35,6 @@ class ProductCard extends React.Component {
 
   render () {
     const product = this.props.product
-    const salePrice = (product.price * (1 - product.discount_percent)).toFixed(2)
 
     const saleStyle = createMuiTheme({
       palette: {
@@ -45,11 +44,12 @@ class ProductCard extends React.Component {
       }
     })
 
-    const priceText = (product.discount_percent <= 0) ? (<Typography variant="h5">${product.price}</Typography>) : (
+    const discountPercent = ((product.discount_price - product.price) / product.price * 100).toFixed(0)
+    const priceText = (product.discount_price == null) ? (<Typography variant="h5">${product.price}</Typography>) : (
       <ThemeProvider theme={saleStyle}>
         <Typography variant="h5" className="original-price-cross">${product.price}</Typography>
-        <Typography variant="h4">${salePrice}</Typography>
-        <Chip label={`${(product.discount_percent * 100).toFixed(0)}% off`} color="primary" />
+        <Typography variant="h4">${product.discount_price}</Typography>
+        <Chip label={`${discountPercent}% off`} color="primary" />
       </ThemeProvider>
     )
 

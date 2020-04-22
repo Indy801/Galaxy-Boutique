@@ -19,11 +19,11 @@ class CheckoutController < ApplicationController
       params[:cart].each do |item|
         product_detail = products.find(item[:id]) # N problem
         quantity = item[:quantity]
-        cur_price = (product_detail.price * (1 - product_detail.discount_percent)).round(2)
+        cur_price = product_detail.discount_price || product_detail.price
         sale_price = (cur_price * quantity).round(2)
         @total += sale_price
         @original_total += (product_detail.price * quantity).round(2)
-        @discount_total += (product_detail.price * product_detail.discount_percent * quantity).round(2)
+        @discount_total += (product_detail.price - (product_detail.discount_price || product_detail.price)).round(2) * quantity
         order_item = {
           detail:     product_detail,
           quantity:   quantity,

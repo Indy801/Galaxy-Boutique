@@ -4,7 +4,7 @@ ActiveAdmin.register Product do
   #
   # Uncomment all parameters which should be permitted for assignment
   #
-  permit_params :product_number, :name, :description, :price, :quantity_in_stock, :discount_percent, :category_id, :image
+  permit_params :product_number, :name, :description, :price, :quantity_in_stock, :discount_price, :category_id, :image
 
   form do |f|
     f.semantic_errors # shows errors on :base
@@ -22,7 +22,7 @@ ActiveAdmin.register Product do
       row :description
       row :price
       row :quantity_in_stock
-      row :discount_percent
+      row :discount_price
       row :category
       row :created_at
       row :updated_at
@@ -41,7 +41,7 @@ ActiveAdmin.register Product do
   # or
   #
   # permit_params do
-  #   permitted = [:product_number, :name, :description, :price, :quantity_in_stock, :discount_percent, :category_id]
+  #   permitted = [:product_number, :name, :description, :price, :quantity_in_stock, :discount_price, :category_id]
   #   permitted << :other if params[:action] == 'create' && current_user.admin?
   #   permitted
   # end
