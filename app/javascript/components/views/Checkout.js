@@ -42,6 +42,7 @@ class Checkout extends React.Component {
       user: null,
       payButtonDisable: false,
       placeSuccess: false,
+      requestingPreview: false,
     }
   }
 
@@ -80,14 +81,16 @@ class Checkout extends React.Component {
   }
 
   getPreviewOrder = async (cart, address) => {
+    this.setState({ requestingPreview: true })
     return Axios({
       method: "post",
       url: "/api/checkout/preview",
       data: { cart: cart, address: (address ? address.id : null) },
       headers: LoginToken.getHeaderWithToken()
     }).then(res => {
-      this.setState({ order: res.data })
+      this.setState({ order: res.data, requestingPreview: false })
     }).catch(err => {
+      this.setState({ requestingPreview: false })
       if (err.response.status == 401) {
         this.props.history.push("/login")
       }
@@ -213,7 +216,7 @@ class Checkout extends React.Component {
     switch (this.state.curStep) {
       case 0:
         stepSection = <AddressSection addressChange={this.changeAddress} />
-        nextButton = (<Button variant="contained" color="primary" disabled={!this.state.currentAddress.id}
+        nextButton = (<Button variant="contained" color="primary" disabled={!this.state.currentAddress.id || this.state.requestingPreview}
           onClick={this.reviewOrderClick}
           startIcon={<Receipt />}
         >Review Your Order</Button>)
