@@ -29,7 +29,7 @@ rails db:create
 rails db:migrate
 ```
 
-## Seed the data base with sample data
+## Seed the database with sample data
 Use the following command the seed the database with sample data.
 ```
 rails db:seed
