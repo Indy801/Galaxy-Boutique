@@ -155,7 +155,13 @@ if Rails.env.development?
   Province.create(name: "Quebec", abbr: "QC", gst_rate: 0.05, pst_rate: 0.09975)
 
   # Company Pages
-  Page.create(url: "about", title: "About", content: "Some information about your website.")
+  Page.create(url: "about", title: "About", content: "# Some Title\r\n\r\nSome **information** about your *website*.\r\n\r\n
+    The company pages support markdown syntax. To learn more about markdown [click here](https://daringfireball.net/projects/markdown/).\r\n\r\n
+    --------\r\n\r\n
+    List more information about your website.\r\n\r\n
+    * The mission of your company\r\n
+    * The strategy plan\r\n
+    * The management team\r\n")
   Page.create(url: "contact_us", title: "Contact Us", content: "Your contact information.")
 
   # User
