@@ -59,10 +59,10 @@ development:
   # Reference: https://webpack.js.org/configuration/dev-server/
   dev_server:
     https: false
-    host: localhost
+    host: webpacker
     port: 3035
-    public: localhost:3035
-    hmr: false
+    public: webpacker:3035
+    hmr: true
     # Inline should be set to true if using HMR
     inline: true
     overlay: true
@@ -75,6 +75,11 @@ development:
       'Access-Control-Allow-Origin': '*'
     watch_options:
       ignored: '**/node_modules/**'
+  # Dev server are set to support developing using docker
+  # If developing locally use the following config
+  # host: localhost
+  # public: local:3035
+  # hmr: false
 
 
 test:
