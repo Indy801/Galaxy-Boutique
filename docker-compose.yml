@@ -34,3 +34,7 @@ services:
         environment: 
             - MYSQL_ROOT_PASSWORD=Password01
             - MYSQL_DATABASE=galaxy_dev
+#         volumes:
+#             - galaxy-dev-vol:/var/lib/mysql
+# volumes:
+#     galaxy-dev-vol:

@@ -171,4 +171,8 @@ List more information about your website.\r\n\r\n
   user.addresses.create(street_no: "160 Princess Street", apt_no: "P204", city: "Winnipeg", province: mb, postal_code: "R3B 1K9")
   user.addresses.create(street_no: "20 Main Street", city: "Toronto", province: on, postal_code: "M5J 1E6")
 
+
+  # Success message
+  puts "Populated the database with sample data."
+
 end
