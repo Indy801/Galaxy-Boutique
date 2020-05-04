@@ -25,6 +25,10 @@ module GalaxyBoutique
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
 
-    # config.hosts << ENV["hostname"]
+    if ENV["HOSTNAME"]
+      config.hosts << ENV["HOSTNAME"]
+    else
+      puts "Hostname is not set."
+    end
   end
 end

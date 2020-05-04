@@ -104,6 +104,10 @@ class CheckoutController < ApplicationController
     end
   end
 
+  def stripe_pub_key
+    render json: { pub_key: Rails.configuration.stripe[:publishable_key] }
+  end
+
   private
 
   def check_login

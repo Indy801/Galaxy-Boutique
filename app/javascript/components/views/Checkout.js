@@ -39,7 +39,7 @@ class Checkout extends React.Component {
       order: null,
       curStep: 0,
       placingOrder: false,
-      stripePromise: loadStripe('pk_test_gxH1mVNQS3MsZy7ndigb9bbk00zOlXJaLU'),
+      stripePromise: null,
       user: null,
       payButtonDisable: false,
       placeSuccess: false,
@@ -57,6 +57,16 @@ class Checkout extends React.Component {
       this.setState({ user: response.data })
     }).catch(error => {
       // this.props.history.push("/login")
+    })
+
+    Axios({
+      method: "get",
+      url: "/api/checkout/stripe_pub",
+      headers: LoginToken.getHeaderWithToken()
+    }).then(res => {
+      this.setState({ stripePromise: loadStripe(res.data.pub_key) })
+    }).catch(error => {
+      console.error("Error fetching stripe publishable key.")
     })
 
     if (this.props.match.params.id) {
