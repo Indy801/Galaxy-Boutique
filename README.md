@@ -4,7 +4,7 @@ This react and rails project is a project for an academic course.
 React is served using the "react-rails" gem.
 
 ## Descriptions
-This is an eCommerce website built on react (front-end) and rails (back-end) that simulate the selling of video games online.
+This is an eCommerce website built on react (front-end) and rails (back-end) that simulate the selling of video games (or other physical products) online.
 
 It contains the following functionalities:
 
@@ -31,7 +31,7 @@ To develop the project locally, you need to install the following:
 ### Change the configuration file
 In config/database.yml
 
-Uncomment in (or put in) the following
+Uncomment (or put in) the following
 ```yaml
 development:
   <<: *default
@@ -130,6 +130,25 @@ To enable database data to store in the local file system, modified the docker-c
 volumes:
     galaxy-dev-vol:
 ```
+
+## Environment variables
+The website needs some environment variables to function properly.
+
+Create a `local_env.yml` file in the `config` directory.
+
+Put in the following environment variables:
+```yaml
+DEVISE_SECRET_KEY: yourdevisesecretkey
+STRIPE_SECRET_KEY: sk_test_yourstripesecretkey
+STRIPE_PUB_KEY: pk_test_yourstripepubalishablekey
+HOSTNAME: yourhostname
+```
+Descriptions for the variables:
+
+* `DEVISE_SECRET_KEY`: The key used to encrypt the devise login and register token. You can use the command `rails secret` to generate one.
+* `STRIPE_SECRET_KEY`: The key used to generate stripe payment intent. See the Stripe website for more information.
+* `STRIPE_PUB_KEY`: The key used to create stripe promise. See the Stripe website for more information.
+* `HOSTNAME`: The host name of the server.
 
 ## Seed the database with sample data
 Use the following command the seed the database with sample data.
