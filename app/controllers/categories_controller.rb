@@ -29,11 +29,21 @@ class CategoriesController < ApplicationController
 
   def extract_filter_param
     sql_fragment = []
-    sql_fragment.push("date(created_at) >= date('now','-3 day')") if params.key?(:new)
+    sql_params = []
+    if params.key?(:new)
+      sql_fragment.push("created_at >= ?")
+      sql_params << (DateTime.now - 3.day)
+    end
     if params.key?(:ru)
-      sql_fragment.push("(date(created_at) <> date(updated_at) AND date(updated_at) >= date('now','-3 day'))")
+      sql_fragment.push("(created_at <> updated_at AND updated_at >= ?)")
+      sql_params << (DateTime.now - 3.day)
     end
     sql_fragment.push("discount_price IS NOT NULL") if params.key?(:os)
-    sql_fragment.join(" OR ")
+    sql_statement = sql_fragment.join(" OR ")
+    if sql_statement != ""
+      [sql_statement] + sql_params
+    else
+      ""
+    end
   end
 end
